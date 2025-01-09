@@ -1,2 +1,2 @@
 # Airline Management System
--created basic structure and functions
+-created basic structure and functions.
