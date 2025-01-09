@@ -37,6 +37,7 @@ class Priority{
         }
     }    
 };
+
 int main() {
     int priority=1;
     int Booking=10;
