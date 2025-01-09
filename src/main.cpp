@@ -4,7 +4,7 @@
 using namespace std;
 class Priority{
     public:
-    priority_queue<int, vector<int>, greater<int>> pq;
+    priority_queue<int, vector<int>, less<int>> pq;
     void checkP(int priority){
         if (priority ==0){
             cout<<"standard Booking"<<endl;
@@ -35,15 +35,10 @@ class Priority{
             pq.pop();
             cout<<"Cancellation Succesfull"<<endl;
         }
-    }    
+    }
 };
-
 int main() {
-    int priority=1;
     int Booking=10;
     Priority obj;
-    obj.checkP(priority);
-    obj.Cancellation();
-    obj.Book(Booking);
     return 0;
 }
