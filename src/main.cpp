@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
-#include <sstream> // ss stands for strig stream using it to perform input and output operations on strings
+#include <sstream> // ss stands for string stream using it to perform input and output operations on strings
 using namespace std;
 
 class SeatManager
@@ -81,6 +81,12 @@ public:
                 string ticketID = generateTicketID(seatClass, row, col, priority);
                 bookings[ticketID] = {seatClass, {row, col}};
                 cout << "Seat [" << row + 1 << "][" << col + 1 << "] in Economy booked successfully with Ticket ID: " << ticketID << endl;
+
+                // Decrement VIP counter if priority is VIP
+                if (priority == "VIP")
+                {
+                    vipPriorityCounter--;
+                }
                 return true;
             }
             else
@@ -102,6 +108,12 @@ public:
                 string ticketID = generateTicketID(seatClass, row, col, priority);
                 bookings[ticketID] = {seatClass, {row, col}};
                 cout << "Seat [" << row + 1 << "][" << col + 1 << "] in Business booked successfully with Ticket ID: " << ticketID << endl;
+
+                // Decrement VIP counter if priority is VIP
+                if (priority == "VIP")
+                {
+                    vipPriorityCounter--;
+                }
                 return true;
             }
             else
@@ -128,11 +140,11 @@ public:
             for (int i = 0; i < rows; i++)
             {
                 if (seatMap[i][0] == 0)
-                { // First column which is a  window seat
+                {
                     return allocateSeat(seatClass, i, 0, priority);
                 }
                 if (seatMap[i][cols - 1] == 0)
-                { // Last column which is a window seat
+                {
                     return allocateSeat(seatClass, i, cols - 1, priority);
                 }
             }
@@ -142,7 +154,7 @@ public:
             for (int i = 0; i < rows; i++)
             {
                 for (int j = 1; j < cols - 1; j++)
-                { // Skip window seats
+                {
                     if (seatMap[i][j] == 0)
                     {
                         return allocateSeat(seatClass, i, j, priority);
@@ -161,10 +173,8 @@ public:
         {
             if (vipPriorityCounter > 0)
             {
-                int priority = vipPriorityCounter;
-                vipPriorityCounter--; // Decrease the priority counter
-                cout << "VIP assigned priority: " << priority << endl;
-                return priority;
+                cout << "VIP assigned priority: " << vipPriorityCounter << endl;
+                return vipPriorityCounter;
             }
             else
             {
@@ -196,7 +206,10 @@ public:
             {
                 businessSeats[row][col] = 0;
             }
-
+            if (ticketID.find("VIP") != string::npos)
+            {
+                vipPriorityCounter++;
+            }
             bookings.erase(ticketID);
             cout << "Seat [" << row + 1 << "][" << col + 1 << "] in " << seatClass << " class is now available.\n";
             return true;
@@ -232,7 +245,7 @@ public:
             cout << "Seat Class: " << seatClass << "\n";
             cout << "Row: " << row + 1 << "\n";
             cout << "Column: " << col + 1 << "\n";
-            cout << "Seat Preference: " << ((col == 0 || col == economyCols - 1) ? "Window" : "Aisle") << "\n";
+            cout << "Seat Type : " << ((col == 0 || col == economyCols - 1) ? "Window" : "Aisle") << "\n";
             cout << "Member Type: " << (isVIP ? "VIP" : "Regular") << "\n";
         }
         else
@@ -240,12 +253,10 @@ public:
             cout << "No booking found for Ticket ID: " << ticketID << endl;
         }
     }
-
 };
 
 int main()
 {
-
     SeatManager manager(6, 4, 3, 4, 10);
 
     int choice;
@@ -253,66 +264,85 @@ int main()
     int row, col;
 
     do
+
     {
-        cout << "\n1. Display Seat Map\n2. Book a Seat\n3. Free a Seat\n4. Book Preferred Seat\n5. Display VIP Status\n6. Check Booking Status\n7. Exit\nEnter your choice: ";
+        cout << "\nMenu:\n";
+        cout << "1. Display Seat Map\n";
+        cout << "2. Book a Specific Seat\n";
+        cout << "3. Book a Preferred Seat\n";
+        cout << "4. Free a Seat\n";
+        cout << "5. Display VIP Status\n";
+        cout << "6. Check Booking Status\n";
+        cout << "7. Exit\n";
+        cout << "Enter your choice: ";
         cin >> choice;
 
         switch (choice)
         {
         case 1:
+        {
+            cout << "Displaying seat map.\n";
             manager.displaySeatMap();
             break;
+        }
+
         case 2:
         {
-            cout << "Enter member type (VIP/Regular): ";
-            cin >> memberType;
+            cout << "Allocating specific seat.\n";
             cout << "Enter seat class (economy/business): ";
             cin >> seatClass;
-            cout << "Enter row and column to book: ";
+            cout << "Enter row and column: ";
             cin >> row >> col;
-            manager.assignPriority(memberType);
+            cout << "Enter member type (VIP/Regular): ";
+            cin >> memberType;
             manager.allocateSeat(seatClass, row - 1, col - 1, memberType);
+            manager.assignPriority(memberType);
             break;
         }
         case 3:
         {
-            cout << "Enter Ticket ID to free: ";
+            cout << "Allocating preferred seat.\n";
+            cout << "Enter seat class (economy/business): ";
+            cin >> seatClass;
+            cout << "Enter preference (window/aisle): ";
+            cin >> preference;
+            cout << "Enter member type (VIP/Regular): ";
+            cin >> memberType;
+            manager.allocatePreferredSeat(seatClass, preference, memberType);
+            manager.assignPriority(memberType);
+            break;
+        }
+        case 4:
+        {
+            cout << "Freeing a seat.\n";
+            cout << "Enter Ticket ID: ";
             string ticketID;
             cin >> ticketID;
             manager.freeSeat(ticketID);
             break;
         }
-        case 4:
-        {
-            cout << "Enter member type (VIP/Regular): ";
-            cin >> memberType;
-            cout << "Enter seat class (economy/business): ";
-            cin >> seatClass;
-            cout << "Enter preference (window/aisle): ";
-            cin >> preference;
-            manager.assignPriority(memberType);
-            manager.allocatePreferredSeat(seatClass, preference, memberType);
-            break;
-        }
         case 5:
         {
+            cout << "Displaying VIP status.\n";
             manager.displayVipStatus();
             break;
         }
         case 6:
-            {
-                manager.checkBookingStatus();
-                break;
-            }
+        {
+            cout << "Checking booking status.\n";
+            manager.checkBookingStatus();
+            break;
+        }
         case 7:
-            {
-                cout << "Exiting...\n";
-                break;
-            }
-
+        {
+            cout << "Exiting program.\n";
+            cout << "Thank you for using the Airline Seat Booking System.\n";
+            break;
+        }
         default:
         {
-            cout << "Invalid choice. Try again.\n";
+            cout << "Invalid choice entered: " << choice << endl;
+            cout << "Invalid choice. Please try again.\n";
         }
         }
     } while (choice != 7);
