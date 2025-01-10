@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include<algorithm>
 using namespace std;
 
 struct Flight {
@@ -61,7 +62,7 @@ public:
 
         switch (choice) {
         case 1:
-            ticket.ticketType = "One-Way"; 
+            ticket.ticketType = "One-Way";
             handleOneWayBooking(ticket);
             break;
         case 2:
@@ -147,6 +148,23 @@ public:
         }
     }
 
+    void cancelTicket() {
+        string passengerName;
+        cout << "\nEnter the name of the passenger whose ticket you want to cancel: ";
+        cin.ignore();
+        getline(cin, passengerName);
+        auto it = remove_if(bookedTickets.begin(), bookedTickets.end(), [&](const Ticket& ticket) {
+            return ticket.passengerName == passengerName;
+        });
+
+        if (it != bookedTickets.end()) {
+            bookedTickets.erase(it, bookedTickets.end());
+            cout << "\nTicket for " << passengerName << " has been canceled successfully.\n";
+        } else {
+            cout << "\nNo ticket found for the passenger name provided.\n";
+        }
+    }
+
     void viewBookedTickets() {
         cout << "\nBooked Tickets:" << endl;
         for (const auto& ticket : bookedTickets) {
@@ -171,7 +189,8 @@ int main() {
         cout << "1. View Available Flights\n";
         cout << "2. Book Ticket\n";
         cout << "3. View Booked Tickets\n";
-        cout << "4. Exit\n";
+        cout << "4. Cancel Ticket\n";
+        cout << "5. Exit\n";
         cout << "Enter your choice: ";
         cin >> option;
 
@@ -186,12 +205,15 @@ int main() {
             system.viewBookedTickets();
             break;
         case 4:
+            system.cancelTicket();
+            break;
+        case 5:
             cout << "Exiting..." << endl;
             break;
         default:
             cout << "Invalid option!" << endl;
         }
-    } while (option != 4);
+    } while (option != 5);
 
     return 0;
 }
