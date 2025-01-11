@@ -13,7 +13,9 @@ private:
     int businessRows, businessCols;
     int vipSeats;
     int vipPriorityCounter;
+    int regularPriorityCounter;
     unordered_map<string, pair<string, pair<int, int>>> bookings;
+    unordered_map<int, string> priorityMap;
 
     string generateTicketID(string seatClass, int row, int col, string priority)
     {
@@ -21,11 +23,11 @@ private:
         ss << seatClass[0]; // 'E' for economy or 'B' for business
         if (priority == "VIP")
         {
-            ss << "VIP_R" << row + 1 << "C" << col + 1;
+            ss << "VIP_R" << row << "C" << col;
         }
         else
         {
-            ss << "_R" << row + 1 << "C" << col + 1;
+            ss << "_R" << row << "C" << col;
         }
         return ss.str();
     }
@@ -40,7 +42,8 @@ public:
         economySeats.resize(economyRows, vector<int>(economyCols, 0));
         businessSeats.resize(businessRows, vector<int>(businessCols, 0));
         vipSeats = vipCount;
-        vipPriorityCounter = vipSeats;
+        vipPriorityCounter = 36;
+        regularPriorityCounter = 26;
     }
 
     void displaySeatMap()
@@ -68,6 +71,9 @@ public:
 
     bool allocateSeat(string seatClass, int row, int col, string priority)
     {
+        row -= 1; // Convert to zero-based indexing
+        col -= 1; // Convert to zero-based indexing
+
         if (seatClass == "economy")
         {
             if (row >= economyRows || col >= economyCols || row < 0 || col < 0)
@@ -78,15 +84,21 @@ public:
             if (economySeats[row][col] == 0)
             {
                 economySeats[row][col] = 1;
-                string ticketID = generateTicketID(seatClass, row, col, priority);
-                bookings[ticketID] = {seatClass, {row, col}};
-                cout << "Seat [" << row + 1 << "][" << col + 1 << "] in Economy booked successfully with Ticket ID: " << ticketID << endl;
+                string ticketID = generateTicketID(seatClass, row + 1, col + 1, priority);
+                bookings[ticketID] = {seatClass, {row + 1, col + 1}};
 
-                // Decrement VIP counter if priority is VIP
                 if (priority == "VIP")
                 {
+                    priorityMap[vipPriorityCounter] = ticketID;
                     vipPriorityCounter--;
                 }
+                else
+                {
+                    priorityMap[regularPriorityCounter] = ticketID;
+                    regularPriorityCounter--;
+                }
+                int assiginedPriority = assignPriority(priority);
+                cout << "Seat [" << row + 1 << "][" << col + 1 << "] in Economy booked successfully with Ticket ID: " << ticketID << " AND Priority :"<< assiginedPriority+1 <<endl;
                 return true;
             }
             else
@@ -105,15 +117,21 @@ public:
             if (businessSeats[row][col] == 0)
             {
                 businessSeats[row][col] = 1;
-                string ticketID = generateTicketID(seatClass, row, col, priority);
-                bookings[ticketID] = {seatClass, {row, col}};
-                cout << "Seat [" << row + 1 << "][" << col + 1 << "] in Business booked successfully with Ticket ID: " << ticketID << endl;
+                string ticketID = generateTicketID(seatClass, row + 1, col + 1, priority);
+                bookings[ticketID] = {seatClass, {row + 1, col + 1}};
 
-                // Decrement VIP counter if priority is VIP
                 if (priority == "VIP")
                 {
+                    priorityMap[vipPriorityCounter] = ticketID;
                     vipPriorityCounter--;
                 }
+                else
+                {
+                    priorityMap[regularPriorityCounter] = ticketID;
+                    regularPriorityCounter--;
+                }
+                int assiginedPriority = assignPriority(priority);
+                cout << "Seat [" << row + 1 << "][" << col + 1 << "] in Business booked successfully with Ticket ID: " << ticketID << " AND Priority :"<< assiginedPriority+1 <<endl;
                 return true;
             }
             else
@@ -141,11 +159,11 @@ public:
             {
                 if (seatMap[i][0] == 0)
                 {
-                    return allocateSeat(seatClass, i, 0, priority);
+                    return allocateSeat(seatClass, i + 1, 1, priority);
                 }
                 if (seatMap[i][cols - 1] == 0)
                 {
-                    return allocateSeat(seatClass, i, cols - 1, priority);
+                    return allocateSeat(seatClass, i + 1, cols, priority);
                 }
             }
         }
@@ -157,7 +175,7 @@ public:
                 {
                     if (seatMap[i][j] == 0)
                     {
-                        return allocateSeat(seatClass, i, j, priority);
+                        return allocateSeat(seatClass, i + 1, j + 1, priority);
                     }
                 }
             }
@@ -166,12 +184,11 @@ public:
         return false;
     }
 
-    // Assign priority
     int assignPriority(string memberType)
     {
         if (memberType == "VIP")
         {
-            if (vipPriorityCounter > 0)
+            if (vipPriorityCounter >= 27)
             {
                 cout << "VIP assigned priority: " << vipPriorityCounter << endl;
                 return vipPriorityCounter;
@@ -184,12 +201,19 @@ public:
         }
         else
         {
-            cout << "Regular member assigned priority: 0\n";
-            return 0;
+            if (regularPriorityCounter > 0)
+            {
+                cout << "Regular member assigned priority: " << regularPriorityCounter << endl;
+                return regularPriorityCounter;
+            }
+            else
+            {
+                cout << "No Regular seats available.\n";
+                return 0;
+            }
         }
     }
 
-    // Free a seat by ticket ID
     bool freeSeat(string ticketID)
     {
         if (bookings.find(ticketID) != bookings.end())
@@ -200,18 +224,24 @@ public:
 
             if (seatClass == "economy")
             {
-                economySeats[row][col] = 0;
+                economySeats[row - 1][col - 1] = 0;
             }
             else if (seatClass == "business")
             {
-                businessSeats[row][col] = 0;
+                businessSeats[row - 1][col - 1] = 0;
             }
+
             if (ticketID.find("VIP") != string::npos)
             {
                 vipPriorityCounter++;
             }
+            else
+            {
+                regularPriorityCounter++;
+            }
+
             bookings.erase(ticketID);
-            cout << "Seat [" << row + 1 << "][" << col + 1 << "] in " << seatClass << " class is now available.\n";
+            cout << "Seat [" << row << "][" << col << "] in " << seatClass << " class is now available.\n";
             return true;
         }
         else
@@ -221,10 +251,15 @@ public:
         }
     }
 
-    // Display VIP seat status
     void displayVipStatus()
     {
-        cout << "VIP Seats Left: " << vipPriorityCounter << endl;
+        cout << "VIP Seats Left: " << (vipPriorityCounter - 26) << endl;
+        
+    }
+
+    void displayRegularStatus()
+    {
+        cout << "Regular Seats Left: " << regularPriorityCounter << endl;
     }
 
     void checkBookingStatus()
@@ -243,14 +278,46 @@ public:
             cout << "Booking Details:\n";
             cout << "Ticket ID: " << ticketID << "\n";
             cout << "Seat Class: " << seatClass << "\n";
-            cout << "Row: " << row + 1 << "\n";
-            cout << "Column: " << col + 1 << "\n";
-            cout << "Seat Type : " << ((col == 0 || col == economyCols - 1) ? "Window" : "Aisle") << "\n";
+            cout << "Row: " << row << "\n";
+            cout << "Column: " << col << "\n";
+            cout << "Seat Type : " << ((col == 1 || col == economyCols) ? "Window" : "Aisle") << "\n";
             cout << "Member Type: " << (isVIP ? "VIP" : "Regular") << "\n";
         }
         else
         {
             cout << "No booking found for Ticket ID: " << ticketID << endl;
+        }
+    }
+
+    void checkBookingByPriority()
+    {
+        int priorityNo;
+        cout << "Enter Priority Number: ";
+        cin >> priorityNo;
+
+        if (priorityMap.find(priorityNo) != priorityMap.end())
+        {
+            string ticketID = priorityMap[priorityNo];
+            if (bookings.find(ticketID) != bookings.end())
+            {
+                string seatClass = bookings[ticketID].first;
+                int row = bookings[ticketID].second.first;
+                int col = bookings[ticketID].second.second;
+                bool isVIP = (ticketID[1] == 'V');
+
+                cout << "Booking Details:\n";
+                cout << "Priority Number: " << priorityNo << "\n";
+                cout << "Ticket ID: " << ticketID << "\n";
+                cout << "Seat Class: " << seatClass << "\n";
+                cout << "Row: " << row << "\n";
+                cout << "Column: " << col << "\n";
+                cout << "Seat Type : " << ((col == 1 || col == economyCols) ? "Window" : "Aisle") << "\n";
+                cout << "Member Type: " << (isVIP ? "VIP" : "Regular") << "\n";
+            }
+        }
+        else
+        {
+            cout << "No booking found for Priority Number: " << priorityNo << endl;
         }
     }
 };
@@ -264,7 +331,6 @@ int main()
     int row, col;
 
     do
-
     {
         cout << "\nMenu:\n";
         cout << "1. Display Seat Map\n";
@@ -272,8 +338,10 @@ int main()
         cout << "3. Book a Preferred Seat\n";
         cout << "4. Free a Seat\n";
         cout << "5. Display VIP Status\n";
-        cout << "6. Check Booking Status\n";
-        cout << "7. Exit\n";
+        cout << "6. Display Regular Status\n";
+        cout << "7. Check Booking Status\n";
+        cout << "8. Check Booking by Priority\n";
+        cout << "9. Exit\n";
         cout << "Enter your choice: ";
         cin >> choice;
 
@@ -285,7 +353,6 @@ int main()
             manager.displaySeatMap();
             break;
         }
-
         case 2:
         {
             cout << "Allocating specific seat.\n";
@@ -295,8 +362,7 @@ int main()
             cin >> row >> col;
             cout << "Enter member type (VIP/Regular): ";
             cin >> memberType;
-            manager.allocateSeat(seatClass, row - 1, col - 1, memberType);
-            manager.assignPriority(memberType);
+            manager.allocateSeat(seatClass, row, col, memberType);
             break;
         }
         case 3:
@@ -309,7 +375,7 @@ int main()
             cout << "Enter member type (VIP/Regular): ";
             cin >> memberType;
             manager.allocatePreferredSeat(seatClass, preference, memberType);
-            manager.assignPriority(memberType);
+        
             break;
         }
         case 4:
@@ -323,29 +389,40 @@ int main()
         }
         case 5:
         {
-            cout << "Displaying VIP status.\n";
+            cout << "Displaying VIP seat status.\n";
             manager.displayVipStatus();
             break;
         }
         case 6:
         {
-            cout << "Checking booking status.\n";
-            manager.checkBookingStatus();
+            cout << "Displaying Regular seat status.\n";
+            manager.displayRegularStatus();
             break;
         }
         case 7:
         {
-            cout << "Exiting program.\n";
-            cout << "Thank you for using the Airline Seat Booking System.\n";
+            cout << "Checking booking status by Ticket ID.\n";
+            manager.checkBookingStatus();
+            break;
+        }
+        case 8:
+        {
+            cout << "Checking booking details by Priority Number.\n";
+            manager.checkBookingByPriority();
+            break;
+        }
+        case 9:
+        {
+            cout << "Exiting the program. Thank you!\n";
             break;
         }
         default:
         {
-            cout << "Invalid choice entered: " << choice << endl;
-            cout << "Invalid choice. Please try again.\n";
+            cout << "Invalid choice. Please select a valid option.\n";
         }
         }
-    } while (choice != 7);
+    } while (choice != 9);
 
     return 0;
 }
+
