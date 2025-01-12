@@ -102,7 +102,9 @@ public:
                     regularPriorityCounter--;
                 }
                 int assiginedPriority = assignPriority(priority);
+
                 cout << "Seat [" << row + 1 << "][" << col + 1 << "] in Economy booked successfully with Ticket ID: " << ticketID << " AND Priority :"<< assiginedPriority+1 <<endl;
+
                 return true;
             }
             else
@@ -135,7 +137,9 @@ public:
                     regularPriorityCounter--;
                 }
                 int assiginedPriority = assignPriority(priority);
+
                 cout << "Seat [" << row + 1 << "][" << col + 1 << "] in Business booked successfully with Ticket ID: " << ticketID << " AND Priority :"<< assiginedPriority+1 <<endl;
+
                 return true;
             }
             else
