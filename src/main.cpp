@@ -102,7 +102,7 @@ public:
                     regularPriorityCounter--;
                 }
                 int assiginedPriority = assignPriority(priority);
-                cout << "Seat [" << row + 1 << "][" << col + 1 << "] in Economy booked successfully with Ticket ID: " << ticketID << " AND Priority :"<< assiginedPriority+1 <<endl;
+                //cout << "Seat [" << row + 1 << "][" << col + 1 << "] in Economy booked successfully with Ticket ID: " << ticketID << " AND Priority :"<< assiginedPriority+1 <<endl;
                 return true;
             }
             else
@@ -135,7 +135,7 @@ public:
                     regularPriorityCounter--;
                 }
                 int assiginedPriority = assignPriority(priority);
-                cout << "Seat [" << row + 1 << "][" << col + 1 << "] in Business booked successfully with Ticket ID: " << ticketID << " AND Priority :"<< assiginedPriority+1 <<endl;
+                //cout << "Seat [" << row + 1 << "][" << col + 1 << "] in Business booked successfully with Ticket ID: " << ticketID << " AND Priority :"<< assiginedPriority+1 <<endl;
                 return true;
             }
             else
@@ -158,7 +158,7 @@ public:
         {
             if (vipPriorityCounter >= 27)
             {
-                cout << "VIP assigned priority: " << vipPriorityCounter << endl;
+                // cout << "VIP assigned priority: " << vipPriorityCounter << endl;
                 return vipPriorityCounter;
             }
             else
@@ -171,7 +171,7 @@ public:
         {
             if (regularPriorityCounter > 0)
             {
-                cout << "Regular member assigned priority: " << regularPriorityCounter << endl;
+                // cout << "Regular member assigned priority: " << regularPriorityCounter << endl;
                 return regularPriorityCounter;
             }
             else
@@ -381,7 +381,7 @@ public:
                 string ticketID = seatManager.generateTicketID(seatClass, row, col, priority >= 27 ? "VIP" : "Regular");
 
                 customerMap.addCustomer(ticketID, name, contact, email, seatClass, row, col, priority);
-                cout << "Booking confirmed for " << name << " with Ticket ID: " << ticketID
+                cout << "Booking confirmed for Seat [" << row << "][" << col  << "] for " << name << " with Ticket ID: " << ticketID
                      << " and Priority: " << priority << endl;
             } else {
                 cout << "Seat allocation failed for " << name << ". Seat might already be booked.\n";
