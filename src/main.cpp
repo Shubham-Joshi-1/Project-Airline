@@ -299,6 +299,15 @@ public:
             cout << "No customer found with Priority: " << priority << endl;
         }
     }
+    void removeCustomer(const string& ticketID) {
+        auto it = customerMap.find(ticketID);
+        if (it != customerMap.end()) {
+            customerMap.erase(it);
+            cout << "Customer record for Ticket ID: " << ticketID << " has been removed.\n";
+        } else {
+            cout << "No customer record found for Ticket ID: " << ticketID << endl;
+        }
+    }
     };
 
 
@@ -488,6 +497,7 @@ int main()
                 cout << "Enter Ticket ID: ";
                 string ticketID;
                 cin >> ticketID;
+                customerMap.removeCustomer(ticketID);
                 manager.freeSeat(ticketID);
                 break;
             }
