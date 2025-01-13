@@ -36,7 +36,6 @@ public:
         return ss.str();
     }
 
-
     SeatManager(int econRows, int econCols, int busRows, int busCols, int vipCount)
     {
         economyRows = econRows;
@@ -109,6 +108,7 @@ public:
                
 
             return true;
+
             }
             else
             {
@@ -143,6 +143,7 @@ public:
 
                 //cout << "Seat [" << row + 1 << "][" << col + 1 << "] in Business booked successfully with Ticket ID: " << ticketID << " AND Priority :"<< assiginedPriority+1 <<endl;
 
+
                 return true;
             }
             else
@@ -158,7 +159,6 @@ public:
         }
     }
 
-    
     int assignPriority(string memberType)
     {
         if (memberType == "VIP")
@@ -166,6 +166,7 @@ public:
             if (vipPriorityCounter >= 27)
             {
                 // cout << "VIP assigned priority: " << vipPriorityCounter << endl;
+
                 return vipPriorityCounter;
             }
             else
@@ -179,6 +180,7 @@ public:
             if (regularPriorityCounter > 0)
             {
                 // cout << "Regular member assigned priority: " << regularPriorityCounter << endl;
+
                 return regularPriorityCounter;
             }
             else
@@ -229,7 +231,6 @@ public:
     void displayVipStatus()
     {
         cout << "VIP Seats Left: " << (vipPriorityCounter - 26) << endl;
-        
     }
 
     void displayRegularStatus()
@@ -237,12 +238,10 @@ public:
         cout << "Regular Seats Left: " << regularPriorityCounter << endl;
     }
 
-    
-
-
 };
 
 class CustomerDetails {
+
 public:
     string name;
     string contact;
@@ -431,8 +430,6 @@ public:
     }
 };
 
-
-
 int main()
 {
     SeatManager manager(6, 4, 3, 4, 10);
@@ -467,28 +464,29 @@ int main()
                 manager.displaySeatMap();
                 break;
             }
-        case 2: {
-    cin.ignore();
-    cout << "Enter Name: ";
-    getline(cin, name);
-    cout << "Enter Contact: ";
-    cin >> contact;
-    cout << "Enter Email: ";
-    cin >> email;
-    manager.displaySeatMap();
-    cout << "Enter seat class (economy/business): ";
-    cin >> seatClass;
-    cout << "Enter row and column (1-based): ";
-    cin >> row >> col;
-    cout << "Enter member type (VIP/Regular): ";
-    cin >> memberType;
+        case 2: 
+            {
+                cin.ignore();
+                cout << "Enter Name: ";
+                getline(cin, name);
+                cout << "Enter Contact: ";
+                cin >> contact;
+                cout << "Enter Email: ";
+                cin >> email;
+                manager.displaySeatMap();
+                cout << "Enter seat class (economy/business): ";
+                cin >> seatClass;
+                cout << "Enter row and column (1-based): ";
+                cin >> row >> col;
+                cout << "Enter member type (VIP/Regular): ";
+                cin >> memberType;
 
-    int priority = manager.assignPriority(memberType);
-    bookingManager.addBookingRequest(name, contact, email, seatClass, row, col, memberType);
+                int priority = manager.assignPriority(memberType);
+                bookingManager.addBookingRequest(name, contact, email, seatClass, row, col, memberType);
 
 
-    cout << "Booking request added. Admin needs to confirm the booking.\n";
-    break;
+                cout << "Booking request added. Admin needs to confirm the booking.\n";
+                break;
 }
 
         case 3:
