@@ -2,10 +2,12 @@
 #include <unordered_map>
 #include <string>
 #include <sstream>
+
 #include<vector>
 #include <queue>
 #include <tuple>
 #include <algorithm>
+
 using namespace std;
 
 class SeatManager
@@ -20,6 +22,7 @@ private:
     int regularPriorityCounter;
     unordered_map<string, pair<string, pair<int, int>>> bookings;
     unordered_map<int, string> priorityMap;
+
 public:
     string generateTicketID(string seatClass, int row, int col, string priority)
     {
@@ -35,6 +38,7 @@ public:
         }
         return ss.str();
     }
+
 
 
     SeatManager(int econRows, int econCols, int busRows, int busCols, int vipCount)
@@ -109,6 +113,7 @@ public:
                
 
             return true;
+
             }
             else
             {
@@ -141,7 +146,9 @@ public:
                 }
                 int assiginedPriority = assignPriority(priority);
 
+
                 //cout << "Seat [" << row + 1 << "][" << col + 1 << "] in Business booked successfully with Ticket ID: " << ticketID << " AND Priority :"<< assiginedPriority+1 <<endl;
+
 
                 return true;
             }
@@ -158,14 +165,16 @@ public:
         }
     }
 
-    
+
     int assignPriority(string memberType)
     {
         if (memberType == "VIP")
         {
             if (vipPriorityCounter >= 27)
             {
+
                 // cout << "VIP assigned priority: " << vipPriorityCounter << endl;
+
                 return vipPriorityCounter;
             }
             else
@@ -178,7 +187,9 @@ public:
         {
             if (regularPriorityCounter > 0)
             {
+
                 // cout << "Regular member assigned priority: " << regularPriorityCounter << endl;
+
                 return regularPriorityCounter;
             }
             else
@@ -229,7 +240,7 @@ public:
     void displayVipStatus()
     {
         cout << "VIP Seats Left: " << (vipPriorityCounter - 26) << endl;
-        
+
     }
 
     void displayRegularStatus()
@@ -237,12 +248,7 @@ public:
         cout << "Regular Seats Left: " << regularPriorityCounter << endl;
     }
 
-    
 
-
-};
-
-class CustomerDetails {
 public:
     string name;
     string contact;
@@ -253,6 +259,7 @@ public:
     int priority;
 
     // Constructor
+
     CustomerDetails(const string& name, const string& contact, const string& email,
                     const string& ticketID, const string& seatClass, int row, int col,int priority)
         : name(name), contact(contact), email(email), ticketID(ticketID), seatClass(seatClass), row(row), col(col),priority(priority) {}
@@ -283,9 +290,11 @@ public:
         if (it != customerMap.end()) {
             it->second.display();  // Call the display method of CustomerDetails
         } else {
+
             cout << "No customer found with Ticket ID: " << ticketID << endl;
         }
     }
+
 
     void getCustomerByPriority(int priority) const {
         auto pr = priorityMap.find(priority);
@@ -297,6 +306,15 @@ public:
             }
         } else {
             cout << "No customer found with Priority: " << priority << endl;
+        }
+    }
+    void removeCustomer(const string& ticketID) {
+        auto it = customerMap.find(ticketID);
+        if (it != customerMap.end()) {
+            customerMap.erase(it);
+            cout << "Customer record for Ticket ID: " << ticketID << " has been removed.\n";
+        } else {
+            cout << "No customer record found for Ticket ID: " << ticketID << endl;
         }
     }
     };
@@ -424,15 +442,18 @@ public:
 
 
 
+
 int main()
 {
     SeatManager manager(6, 4, 3, 4, 10);
     CustomerHashMap customerMap;
+
     BookingRequestManager bookingManager(manager, customerMap);
 
     int choice;
     string seatClass, preference, memberType,name,contact,email,ticketID;
     int row, col,priority;
+
 
     do
     {
@@ -444,15 +465,18 @@ int main()
         cout << "5. Display Regular Status\n";
         cout << "6. Check Booking Status\n";
         cout << "7. Check Booking by Priority\n";
+
         cout << "8. Process Booking Requests (by Class)\n";
         cout << "9. View Pending Booking Requests (by Class)\n";
         cout << "10. Exit\n";
+
         cout << "Enter your choice: ";
         cin >> choice;
 
         switch (choice)
         {
         case 1:
+
             {
                 cout << "Displaying seat map.\n";
                 manager.displaySeatMap();
@@ -488,6 +512,7 @@ int main()
                 cout << "Enter Ticket ID: ";
                 string ticketID;
                 cin >> ticketID;
+                customerMap.removeCustomer(ticketID);
                 manager.freeSeat(ticketID);
                 break;
             }
@@ -505,10 +530,12 @@ int main()
             }
         case 6:
             {
+
             cout << "Enter Ticket ID to check booking status: ";
             cin >> ticketID;
             customerMap.getCustomerByTicketID(ticketID);
             break;
+
             }
         case 7:
             {
