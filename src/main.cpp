@@ -249,17 +249,19 @@ public:
     string email;
     string ticketID;
     string seatClass;
+    string from;
+    string to;
     int row, col;
     int priority;
 
     // Constructor
     CustomerDetails(const string& name, const string& contact, const string& email,
-                    const string& ticketID, const string& seatClass, int row, int col,int priority)
-        : name(name), contact(contact), email(email), ticketID(ticketID), seatClass(seatClass), row(row), col(col),priority(priority) {}
+                    const string& ticketID, const string& seatClass, int row, int col,int priority,const string& from,const string& to)
+        : name(name), contact(contact), email(email), ticketID(ticketID), seatClass(seatClass), row(row), col(col),priority(priority),from(from),to(to) {}
 
     // Display Customer Info
     void display() const {
-        cout << "Name: " << name << "\nContact: " << contact << "\nEmail: " << email
+        cout <<"Ticket From :- "<<from<<"\nTicket to :- "<<to<< "\nName: " << name << "\nContact: " << contact << "\nEmail: " << email
              << "\nTicket ID: " << ticketID << "\nSeat Class: " << seatClass
              << "\nRow: " << row + 1 << "\nColumn: " << col + 1<<"\nPriority: "<<priority<< "\nSeat Type : " << ((col == 1 || col == 4) ? "Window" : "Aisle")  << endl;
     }
@@ -272,8 +274,8 @@ private:
 public:
     // Emplace customer record directly into the map
     void addCustomer(const string& ticketID, const string& name, const string& contact,
-                     const string& email, const string& seatClass, int row, int col,int priority) {
-        customerMap.emplace(ticketID, CustomerDetails(name, contact, email, ticketID, seatClass, row, col,priority));
+                     const string& email, const string& seatClass, int row, int col,int priority,const string& from,const string& to) {
+        customerMap.emplace(ticketID, CustomerDetails(name, contact, email, ticketID, seatClass, row, col,priority,from,to));
         priorityMap[priority] = ticketID;   
     }
 
@@ -305,8 +307,8 @@ public:
 
 // Comparator for the priority queue (higher priority first)
 struct BookingComparator {
-    bool operator()(const tuple<int, string, string, string, string, int, int>& a,
-                    const tuple<int, string, string, string, string, int, int>& b) {
+    bool operator()(const tuple<int, string, string, string, string, int, int,string,string>& a,
+                    const tuple<int, string, string, string, string, int, int,string,string>& b) {
         return get<0>(a) < get<0>(b); // Higher priority first
     }
 };
@@ -316,13 +318,13 @@ private:
     int currentRegularPriority = 26;
     int currentVIPPriority = 36;
 
-    priority_queue<tuple<int, string, string, string, string, int, int>,
-                   vector<tuple<int, string, string, string, string, int, int>>,
+    priority_queue<tuple<int, string, string, string, string, int, int,string,string>,
+                   vector<tuple<int, string, string, string, string, int, int,string,string>>,
                    BookingComparator>
         economyQueue;
 
-    priority_queue<tuple<int, string, string, string, string, int, int>,
-                   vector<tuple<int, string, string, string, string, int, int>>,
+    priority_queue<tuple<int, string, string, string, string, int, int,string,string>,
+                   vector<tuple<int, string, string, string, string, int, int,string,string>>,
                    BookingComparator>
         businessQueue;
 
@@ -334,7 +336,7 @@ public:
         : seatManager(sm), customerMap(cm) {}
 
     void addBookingRequest(const string& name, const string& contact, const string& email, 
-                       const string& seatClass, int row, int col, const string& memberType){
+                       const string& seatClass, int row, int col, const string& memberType,const string& from,const string& to){
  
         int priority = 0;
         
@@ -348,9 +350,9 @@ public:
         }
 
         if (seatClass == "economy") {
-            economyQueue.emplace(priority, name, contact, email, seatClass, row, col);
+            economyQueue.emplace(priority, name, contact, email, seatClass, row, col,from,to);
         } else if (seatClass == "business") {
-            businessQueue.emplace(priority, name, contact, email, seatClass, row, col);
+            businessQueue.emplace(priority, name, contact, email, seatClass, row, col,from,to);
         } else {
             cout << "Invalid seat class. Booking request not added.\n";
             return;
@@ -361,8 +363,8 @@ public:
     }
 
     void processBookingRequests(const string& seatClass) {
-        priority_queue<tuple<int, string, string, string, string, int, int>,
-                       vector<tuple<int, string, string, string, string, int, int>>,
+        priority_queue<tuple<int, string, string, string, string, int, int,string,string>,
+                       vector<tuple<int, string, string, string, string, int, int,string,string>>,
                        BookingComparator>& queue =
             (seatClass == "economy") ? economyQueue : businessQueue;
 
@@ -383,11 +385,12 @@ public:
             string email = get<3>(request);
             int row = get<5>(request);
             int col = get<6>(request);
-
+            string from = get<7>(request);
+            string to = get<8>(request);
             if (seatManager.allocateSeat(seatClass, row, col, priority >= 27 ? "VIP" : "Regular")) {
                 string ticketID = seatManager.generateTicketID(seatClass, row, col, priority >= 27 ? "VIP" : "Regular");
 
-                customerMap.addCustomer(ticketID, name, contact, email, seatClass, row, col, priority);
+                customerMap.addCustomer(ticketID, name, contact, email, seatClass, row, col, priority,from,to);
                 cout << "Booking confirmed for Seat [" << row << "][" << col  << "] for " << name << " with Ticket ID: " << ticketID
                      << " and Priority: " << priority << endl;
             } else {
@@ -415,9 +418,10 @@ public:
             string name = get<1>(request);
             int row = get<5>(request);
             int col = get<6>(request);
-
+            string from = get<7>(request);
+            string to = get<8>(request);
             cout << "Name: " << name << ", Priority: " << priority
-                 << ", Seat: Row " << row << ", Col " << col << endl;
+                 << ", Seat: Row " << row << ", Col " << col <<"ticket from :-"<<from<<"ticket to:"<<to<< endl;
         }
     }
 };
@@ -431,7 +435,7 @@ int main()
     BookingRequestManager bookingManager(manager, customerMap);
 
     int choice;
-    string seatClass, preference, memberType,name,contact,email,ticketID;
+    string seatClass, preference, memberType,name,contact,email,ticketID,from,to;
     int row, col,priority;
 
     do
@@ -459,27 +463,33 @@ int main()
                 break;
             }
         case 2: {
-    cin.ignore();
-    cout << "Enter Name: ";
-    getline(cin, name);
-    cout << "Enter Contact: ";
-    cin >> contact;
-    cout << "Enter Email: ";
-    cin >> email;
-    manager.displaySeatMap();
-    cout << "Enter seat class (economy/business): ";
-    cin >> seatClass;
-    cout << "Enter row and column (1-based): ";
-    cin >> row >> col;
-    cout << "Enter member type (VIP/Regular): ";
-    cin >> memberType;
+            cin.ignore();
+            cout<<"FROM :- ";
+            getline(cin, from); 
+            // cin.ignore();
+            cout<<"TO :- ";
+            getline(cin, to);  
+            // cin.ignore();
+            cout << "Enter Name: ";
+            getline(cin, name);
+            cout << "Enter Contact: ";
+            cin >> contact;
+            cout << "Enter Email: ";
+            cin >> email;
+            manager.displaySeatMap();
+            cout << "Enter seat class (economy/business): ";
+            cin >> seatClass;
+            cout << "Enter row and column (1-based): ";
+            cin >> row >> col;
+            cout << "Enter member type (VIP/Regular): ";
+            cin >> memberType;
 
-    int priority = manager.assignPriority(memberType);
-    bookingManager.addBookingRequest(name, contact, email, seatClass, row, col, memberType);
+            int priority = manager.assignPriority(memberType);
+            bookingManager.addBookingRequest(name, contact, email, seatClass, row, col, memberType,from,to);
 
 
-    cout << "Booking request added. Admin needs to confirm the booking.\n";
-    break;
+            cout << "Booking request added. Admin needs to confirm the booking.\n";
+            break;
 }
 
         case 3:
