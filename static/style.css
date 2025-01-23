@@ -1,0 +1,137 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    color: #333;
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+header {
+    background: #0073e6;
+    color: #fff;
+    padding: 20px 0;
+}
+
+header h1 {
+    text-align: center;
+    margin: 0;
+}
+
+header nav ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+}
+
+header nav ul li {
+    margin: 0 15px;
+}
+
+header nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.search-bar {
+    background: url('./assets/bg.jpg') no-repeat center center/cover;
+    padding: 20px;
+    text-align: center;
+    backdrop-filter: blur(5px);
+    color: #fff;
+}
+
+.search-bar h2 {
+    margin-bottom: 15px;
+}
+
+.search-bar form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.search-bar form .trip-options {
+    margin-bottom: 15px;
+}
+
+.search-bar form .trip-options label {
+    margin: 0 10px;
+    font-weight: bold;
+}
+
+.search-bar form input, .search-bar form button {
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.search-bar form button {
+    background: #0073e6;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.search-bar form button:hover {
+    background: #005bb5;
+}
+
+.multi-city {
+    display: none;
+    margin-top: 10px;
+}
+
+.multi-city input {
+    margin: 5px 0;
+}
+
+.deals {
+    padding: 20px 0;
+}
+
+.deals h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.deals .card-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.deals .card {
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    text-align: center;
+}
+
+.deals .card img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+footer {
+    background: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+}
+
+footer .social-links a {
+    color: #fff;
+    margin: 0 10px;
+    text-decoration: none;
+}
