@@ -1,0 +1,50 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    color: #333;
+}
+.container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+}
+header {
+    background: #0073e6;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+}
+h2 {
+    margin-bottom: 20px;
+}
+.flight-card {
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.flight-details {
+    flex-grow: 1;
+}
+.flight-price {
+    font-weight: bold;
+    color: #0073e6;
+}
+.back-button {
+    margin-top: 20px;
+    padding: 10px 15px;
+    background: #0073e6;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.back-button:hover {
+    background: #005bb5;
+}

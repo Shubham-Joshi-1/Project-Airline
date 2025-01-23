@@ -1,5 +1,15 @@
-// script.js
 document.addEventListener("DOMContentLoaded", function() {
+    // Set the minimum date for the departure date input
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+    const yyyy = today.getFullYear();
+    const minDate = `${yyyy}-${mm}-${dd}`;
+    
+    document.getElementById("departureDate").setAttribute("min", minDate);
+    document.getElementById("returnDate").setAttribute("min", minDate); // Set min for return date
+    
+    // Existing code for trip options and form submission
     const tripOptions = document.getElementsByName("tripType");
     const returnDate = document.getElementById("returnDate");
     const returnDateLabel = document.querySelector("label[for='returnDate']");
@@ -24,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     document.getElementById("searchForm").addEventListener("submit", function(event) {
-        event.preventDefault();
+        event.preventDefault(); // Prevent the default form submission
 
         const departure = document.getElementById("departure").value;
         const arrival = document.getElementById("arrival").value;
@@ -32,19 +42,21 @@ document.addEventListener("DOMContentLoaded", function() {
         const returnDateValue = document.getElementById("returnDate").value;
         const passengers = document.getElementById("passengers").value;
 
-        let message = `Searching flights from ${departure} to ${arrival} on ${departureDate}`;
+        // Construct the URL with query parameters
+        let url = `available_flights.html?from=${encodeURIComponent(departure)}&to=${encodeURIComponent(arrival)}&date=${encodeURIComponent(departureDate)}`;
 
         if (tripOptions[1].checked && returnDateValue) {
-            message += `, returning on ${returnDateValue}`;
+            url += `&returnDate=${encodeURIComponent(returnDateValue)}`;
         } else if (tripOptions[2].checked) {
             const multiCityInputs = multiCityContainer.querySelectorAll("input");
-            message += ", visiting: ";
-            multiCityInputs.forEach(input => {
-                if (input.value) message += `${input.value} `;
+            multiCityInputs.forEach((input, index) => {
+                if (input.value) {
+                    url += `&city${index + 2}=${encodeURIComponent(input.value)}`; // City 2, City 3, etc.
+                }
             });
         }
 
-        message += ` for ${passengers} passenger(s).`;
-        alert(message);
+        // Redirect to the available flights page
+        window.location.href = url;
     });
 });
