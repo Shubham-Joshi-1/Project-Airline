@@ -6,7 +6,7 @@ const path = require("path");
 const app = express();
 const staticPath = path.join(__dirname, "../static");
 
-mongoose.connect("mongodb+srv://Ansh:<db_password>@cluster0.zycn0.mongodb.net/");
+mongoose.connect("mongodb+srv://Ansh:airline123@cluster0.zycn0.mongodb.net/");
 const db = mongoose.connection;
 
 db.on("error", () => console.log("Error connecting to the database"));
@@ -17,6 +17,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(staticPath));
 app.use('/static', express.static(path.join(__dirname, '../static')));
 app.use(express.json())
+
+app.post("/index.html", async (req, res) => {
+    const { departure, arrival , departureDate, returnDate,passengers } = req.body; 
+    console.log(req.body);
+});
 
 app.get('/', (req, res) => {
     res.sendFile('index.html', { root: path.join(__dirname, '../static') });
