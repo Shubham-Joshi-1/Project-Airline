@@ -1,0 +1,160 @@
+<html>
+<head>
+    <title>Traveler Information</title>
+   
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background-color: #ff4b2b;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .form-group input[type="radio"] {
+            margin-right: 10px;
+        }
+        .form-group .checkbox-group {
+            display: flex;
+            align-items: center;
+        }
+        .form-group .checkbox-group input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .form-group .date-group {
+            display: flex;
+            gap: 10px;
+        }
+        .form-group .date-group input[type="text"],
+        .form-group .date-group select {
+            width: auto;
+            flex: 1;
+        }
+        .form-group .gender-group {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .form-group .gender-group label {
+            font-weight: normal;
+        }
+        .form-group .toggle-link {
+            color: #007bff;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .form-group .toggle-link:hover {
+            text-decoration: none;
+        }
+        .button-group {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .button-group button {
+            background-color: #ff4b2b;
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .button-group button:hover {
+            background-color: #e0431a;
+        }
+        .name-group {
+            display: flex;
+            gap: 10px;
+        }
+        @media (max-width: 600px) {
+            .form-group .date-group {
+                flex-direction: column;
+            }
+            .form-group .gender-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .name-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        Traveler Information
+    </div>
+    <div class="container">
+        <div class="form-group">
+            <label for="email">Email Address*</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+       
+        <div class="form-group">
+            <label>Traveler Info :</label>
+            <div class="form-group name-group">
+                <input type="text" id="first-name" name="first-name" placeholder="First Name*" required>
+                <input type="text" id="last-name" name="last-name" placeholder="Last Name*" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Date of birth*</label>
+            <div class="date-group">
+                <select id="month" name="month" required>
+                    <option value="">Month</option>
+                    <!-- Add month options here -->
+                </select>
+                <input type="text" id="day" name="day" placeholder="DD" required>
+                <input type="text" id="year" name="year" placeholder="YYYY" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Gender*</label>
+            <div class="gender-group">
+                <label><input type="radio" name="gender" value="male" required> Male</label>
+                <label><input type="radio" name="gender" value="female" required> Female</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <span class="toggle-link">Frequent Flyer and Optional Requests</span>
+        </div>
+        <div class="form-group">
+            <button class="toggle-link">Add / Edit Traveler(s)</button>
+        </div>
+        <div class="button-group">
+            <button>Continue to Seats</button>
+        </div>
+    </div>
+</body>
+</html>
