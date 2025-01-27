@@ -116,6 +116,7 @@
         Traveler Information
     </div>
     <div class="container">
+    <form action="/user_info" method="post">
         <div class="form-group">
             <label for="email">Email Address*</label>
             <input type="email" id="email" name="email" required>
@@ -124,8 +125,8 @@
         <div class="form-group">
             <label>Traveler Info :</label>
             <div class="form-group name-group">
-                <input type="text" id="first-name" name="first-name" placeholder="First Name*" required>
-                <input type="text" id="last-name" name="last-name" placeholder="Last Name*" required>
+                <input type="text" id="first-name" name="first_name" placeholder="First Name*" required>
+                <input type="text" id="last-name" name="last_name" placeholder="Last Name*" required>
             </div>
         </div>
         <div class="form-group">
@@ -133,7 +134,20 @@
             <div class="date-group">
                 <select id="month" name="month" required>
                     <option value="">Month</option>
-                    <!-- Add month options here -->
+                    <option value="01">January</option>
+                    <option value="02">February</option>
+                    <option value="03">March</option>
+                    <option value="04">April</option>
+                    <option value="05">May</option>
+                    <option value="06">June</option>
+                    <option value="07">July</option>
+                    <option value="08">August</option>
+                    <option value="09">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+                
                 </select>
                 <input type="text" id="day" name="day" placeholder="DD" required>
                 <input type="text" id="year" name="year" placeholder="YYYY" required>
@@ -153,8 +167,9 @@
             <button class="toggle-link">Add / Edit Traveler(s)</button>
         </div>
         <div class="button-group">
-            <button>Continue to Seats</button>
+            <button type="submit">Continue to Seats</button>
         </div>
+    </form>
     </div>
 </body>
 </html>
