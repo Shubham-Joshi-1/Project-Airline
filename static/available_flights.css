@@ -28,6 +28,10 @@ h2 {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    cursor: pointer;
+}
+.flight-card:hover {
+    background: #e0e0e0;
 }
 .flight-details {
     flex-grow: 1;
