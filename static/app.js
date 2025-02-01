@@ -10,6 +10,13 @@ const db = mongoose.connection;
 db.on("error", () => console.log("Error connecting to the database"));
 db.once("open", () => console.log("MongoDb connected"));
 
+const TicketsSchema = new mongoose.Schema({
+  tripType:String,
+  from:String,
+  to:String,
+  departureDate:Date,
+  passengers:Number
+});
 
 
 app.use(express.static(staticPath));
@@ -19,8 +26,23 @@ app.use(express.urlencoded({ extended: true }));
 
 app.post("/available_flights", async (req, res) => {
     const { tripType,from, to, departureDate, passengers } = req.body; 
-    console.log(req.body); 
-    res.redirect("available_flights");
+    const Tickets = mongoose.model('Tickets', TicketsSchema);
+
+    const   tickets= new   Tickets({
+      tripType,
+      from,
+      to,
+      departureDate,
+      passengers
+  });
+  try {
+    await tickets.save();
+    console.log("Record inserted");
+    res.redirect("/available_flights");
+} catch (err) {
+    console.error(err);
+    res.status(500).send("Error inserting record");
+}
            
 });
 app.post("/user_info", async (req, res) => {
