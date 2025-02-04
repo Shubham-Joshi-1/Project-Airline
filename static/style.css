@@ -1,129 +1,137 @@
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f5f5f5;
-}
-.header {
-    background-color: #003366;
-    color: white;
-    padding: 20px;
-    text-align: center;
+    line-height: 1.6;
+    color: #333;
 }
 
-.search-container {
-    background-color: white;
+.container {
+    width: 80%;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+header {
+    background: #0073e6;
+    color: #fff;
+    padding: 20px 0;
+}
+
+header h1 {
+    text-align: center;
+    margin: 0;
+}
+
+header nav ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+}
+
+header nav ul li {
+    margin: 0 15px;
+}
+
+header nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.search-bar {
+    background: url('./assets/bg.jpg') no-repeat center center/cover;
     padding: 20px;
-    margin: -40px 20px 20px 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    backdrop-filter: blur(5px);
+    color: #fff;
 }
-.search-container .tabs {
+
+.search-bar h2 {
+    margin-bottom: 15px;
+}
+
+.search-bar form {
     display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
+    flex-direction: column;
+    align-items: center;
 }
-.search-container .tabs div {
-    cursor: pointer;
-    padding: 10px 20px;
-    border-bottom: 2px solid transparent;
+
+.search-bar form .trip-options {
+    margin-bottom: 15px;
 }
-.search-container .tabs .active {
-    border-bottom: 2px solid #003366;
-    color: #003366;
+
+.search-bar form .trip-options label {
+    margin: 0 10px;
+    font-weight: bold;
 }
-.search-container .search-options {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-}
-.search-container .search-options div {
-    flex: 1;
-    margin: 5px;
-    min-width: 150px;
-}
-.search-container .search-options input,
-.search-container .search-options select {
-    width: 100%;
+
+.search-bar form input, .search-bar form button {
     padding: 10px;
-    margin-top: 5px;
+    margin: 5px;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
-.search-container .search-options .search-button {
-    background-color: #ff6600;
-    color: white;
+
+.search-bar form button {
+    background: #0073e6;
+    color: #fff;
     border: none;
-    padding: 10px;
     cursor: pointer;
-    border-radius: 5px;
-    position: relative;
-    top : 20px;
 }
-.edit-cancel-container {
-    background-color: white;
-    padding: 20px;
-    margin: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
+
+.search-bar form button:hover {
+    background: #005bb5;
 }
-.edit-cancel-container button {
-    background-color: #003366;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin: 10px;
-    cursor: pointer;
-    border-radius: 5px;
+
+.multi-city {
+    display: none;
+    margin-top: 10px;
 }
-.deals-container {
-    padding: 20px;
+
+.multi-city input {
+    margin: 5px 0;
 }
-.deals-container h2 {
-    text-align: center;
-    color: #333;
-}
-.deals-container h2 .highlight {
-    color: green;
-}
+
 .deals {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
+    padding: 20px 0;
 }
-.deal {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin: 10px;
-    padding: 10px;
-    width: 250px;
+
+.deals h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.deals .card-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.deals .card {
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
     text-align: center;
 }
-.deal img {
+
+.deals .card img {
     width: 100%;
-    border-radius: 10px;
+    height: auto;
+    border-radius: 5px;
 }
-.deal .price {
-    color: green;
-    font-weight: bold;
-}
-.deal .details {
-    color: #666;
-}
-.footer {
-    background-color: #003366;
-    color: white;
-    padding: 20px;
+
+footer {
+    background: #333;
+    color: #fff;
     text-align: center;
+    padding: 10px 0;
 }
-@media (max-width: 768px) {
-    .search-container .search-options {
-        flex-direction: column;
-    }
-    .deals {
-        flex-direction: column;
-        align-items: center;
-    }
+
+footer .social-links a {
+    color: #fff;
+    margin: 0 10px;
+    text-decoration: none;
 }

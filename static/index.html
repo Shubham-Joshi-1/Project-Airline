@@ -1,194 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
- <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>
-   Airline Booking System
-  </title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="style.css">
- </head>
- <body>
-  <div class="header">
-   <h1>
-    Welcome To TEAM S Airline Bookings
-   </h1>
-  </div>
-  <div class="search-container">
-   <div class="tabs">
-    <div class="active">
-     <i class="fas fa-plane">
-     </i>
-     Flights
-    </div>
-   </div>
-   <div class="search-options">
-    <div>
-     <input checked="" id="round-trip" name="trip" type="radio"/>
-     Round Trip
-     <input id="one-way" name="trip" type="radio"/>
-     One Way
-     <input id="multi-city" name="trip" type="radio"/>
-     Multi-City
-    </div>
-    <div>
-     <label for="from">
-      <i class="fas fa-map-marker-alt">
-      </i>
-      From
-     </label>
-     <input id="from" placeholder="Enter here" type="text" value=""/>
-    </div>
-    <div>
-     <label for="to">
-      <i class="fas fa-map-marker-alt">
-      </i>
-      To
-     </label>
-     <input id="to" placeholder="Enter Here" type="text" value=""/>
-    </div>
-    <div>
-     <label for="departure">
-      <i class="fas fa-calendar-alt">
-      </i>
-      Departure
-     </label>
-     <input id="departure" type="date" value="2025-01-22"/>
-    </div>
-    <div>
-     <label for="travellers">
-      <i class="fas fa-user">
-      </i>
-      Travellers
-     </label>
-     <input id="travellers" type="number" value="1"/>
-    </div>
-    <div>
-     <button class="search-button">
-      Search Flights
-     </button>
-    </div>
-   </div>
-  </div>
-  <div class="edit-cancel-container">
-   <button>
-    Edit Booked Ticket
-   </button>
-   <button>
-    Cancel Booked Ticket
-   </button>
-  </div>
-  <div class="deals-container">
-   <h2>
-    Found these
-    <span class="highlight">
-     low
-    </span>
-    fare deals for your next trip
-   </h2>
-   <div class="deals">
-    <div class="deal">
-     <img alt="Golden Gate Bridge in San Francisco" height="150" src="https://storage.googleapis.com/a1aa/image/qk2uZbqk2SJ4NZhqruPyTFln6JswN8OiPIPScYt9ktXf5fIUA.jpg" width="250"/>
-     <h3>
-      San Francisco
-     </h3>
-     <p class="details">
-      May 31 – Jul 27
-      <br/>
-      DEL – SFO
-     </p>
-     <p class="price">
-      $703.99*
-      <br/>
-      Round Trip
-     </p>
-    </div>
-    <div class="deal">
-     <img alt="Vancouver cityscape" height="150" src="https://storage.googleapis.com/a1aa/image/8u1RerwdbuRgAiq1s5Hc0SZJgz2IvalmqTfisP3wofx8nfjQB.jpg" width="250"/>
-     <h3>
-      Vancouver
-     </h3>
-     <p class="details">
-      Jul 16 – Sep 15
-      <br/>
-      DEL – YVR
-     </p>
-     <p class="price">
-      $840.99*
-      <br/>
-      Round Trip
-     </p>
-    </div>
-    <div class="deal">
-     <img alt="Toronto cityscape" height="150" src="https://storage.googleapis.com/a1aa/image/Az7fALOTSRz5K6zRlqVJihzWo07iXGVdykDqw9aCrM995fIUA.jpg" width="250"/>
-     <h3>
-      Toronto
-     </h3>
-     <p class="details">
-      May 12 – Aug 03
-      <br/>
-      DEL – YTO
-     </p>
-     <p class="price">
-      $881.65*
-      <br/>
-      Round Trip
-     </p>
-    </div>
-    <div class="deal">
-     <img alt="Sydney Opera House" height="150" src="https://storage.googleapis.com/a1aa/image/B78U009xN8rfPSzzSjVFazz87iYebKRJnkHJQVfHXA8CsfjQB.jpg" width="250"/>
-     <h3>
-      Sydney
-     </h3>
-     <p class="details">
-      Mar 10 – Apr 20
-      <br/>
-      DEL – SYD
-     </p>
-     <p class="price">
-      $950.50*
-      <br/>
-      Round Trip
-     </p>
-    </div>
-    <div class="deal">
-     <img alt="London cityscape" height="150" src="https://storage.googleapis.com/a1aa/image/QdkZuE85n5LeeUhrydjQoNwHTYRihNBIXfFQYiwDA12GsfjQB.jpg" width="250"/>
-     <h3>
-      London
-     </h3>
-     <p class="details">
-      Jun 01 – Jul 15
-      <br/>
-      DEL – LHR
-     </p>
-     <p class="price">
-      $1200.75*
-      <br/>
-      Round Trip
-     </p>
-    </div>
-    <div class="deal">
-     <img alt="Paris cityscape" height="150" src="https://storage.googleapis.com/a1aa/image/7u1RerwdbuRgAiq1s5Hc0SZJgz2IvalmqTfisP3wofx8nfjQB.jpg" width="250"/>
-     <h3>
-      Paris
-     </h3>
-     <p class="details">
-      Apr 05 – May 20
-      <br/>
-      DEL – CDG
-     </p>
-     <p class="price">
-      $1100.99*
-      <br/>
-      Round Trip
-     </p>
-    </div>
-   </div>
-  </div>
-  <div class="footer">
-  </div>
- </body>
- <script src="script.js"></script>
+    <title>Airline Booking System</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <h1>Airline Booking System</h1>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#flights">Flights</a></li>
+                    <li><a href="#deals">Deals</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Search Section -->
+    <section class="search-bar">
+        <div class="container">
+            <h2>Find Your Flight</h2>
+            <form id="searchForm" action="sumbit" method="post">
+                <div class="trip-options">
+                    <label><input type="radio" name="tripType" value="oneWay" checked> One Way</label>
+                    <label><input type="radio" name="tripType" value="roundTrip"> Round Trip</label>
+                    <label><input type="radio" name="tripType" value="multiCity"> Multi City</label>
+                </div>
+                <input type="text" id="departure" placeholder="From" required>
+                <input type="text" id="arrival" placeholder="To" required>
+                <label for="departureDate">Departure Date:</label>
+                <input type="date" id="departureDate" required>
+                <label for="returnDate" style="display: none;">Return Date:</label>
+                <input type="date" id="returnDate" style="display: none;">
+                <div id="multiCityContainer" class="multi-city">
+                    <input type="text" placeholder="City 2">
+                    <input type="text" placeholder="City 3">
+                </div>
+                <input type="number" id="passengers" placeholder="Passengers" min="1" required>
+                <button type="submit">Search</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Featured Deals Section -->
+    <section id="deals" class="deals">
+        <div class="container">
+            <h2>Featured Deals</h2>
+            <div class="card-container">
+                <div class="card">
+                    <img src="city1.jpg" alt="City 1">
+                    <p>Explore New York - Starting at $299</p>
+                </div>
+                <div class="card">
+                    <img src="city2.jpg" alt="City 2">
+                    <p>Experience Paris - Starting at $399</p>
+                </div>
+                <div class="card">
+                    <img src="city3.jpg" alt="City 3">
+                    <p>Visit Tokyo - Starting at $499</p>
+                </div>
+                <div class="card">
+                    <img src="city7.jpg" alt="City 7">
+                    <p>Explore Rome - Starting at $329</p>
+                </div>
+                <div class="card">
+                    <img src="city8.jpg" alt="City 8">
+                    <p>Marvel at Amsterdam - Starting at $369</p>
+                </div>
+                <div class="card">
+                    <img src="city9.jpg" alt="City 9">
+                    <p>Explore Cape Town - Starting at $459</p>
+                </div>
+                <div class="card">
+                    <img src="city4.jpg" alt="City 4">
+                    <p>Discover Dubai - Starting at $349</p>
+                </div>
+                <div class="card">
+                    <img src="city5.jpg" alt="City 5">
+                    <p>Adventure in Sydney - Starting at $449</p>
+                </div>
+                <div class="card">
+                    <img src="city6.jpg" alt="City 6">
+                    <p>Relax in Bali - Starting at $299</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Airline Booking System. All rights reserved By Team S.</p>
+            <div class="social-links">
+                <a href="#">Facebook</a>
+                <a href="#">Twitter</a>
+                <a href="#">Instagram</a>
+            </div>
+        </div>
+    </footer>
+</body>
+<script src="script.js"></script>
 </html>
+
