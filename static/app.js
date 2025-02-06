@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const path = require("path");
 const app = express();
 const staticPath = path.join(__dirname, "../static");
+const { spawn } = require("child_process");
 
 mongoose.connect("mongodb+srv://Ansh:airline123@cluster0.zycn0.mongodb.net/");
 const db = mongoose.connection;
