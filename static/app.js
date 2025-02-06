@@ -53,10 +53,10 @@ app.post("/user_info", async (req, res) => {
     res.redirect("/user_info");         
 });
 
-// app.use((req, res, next) => {
-//   console.log(`${req.method} request to ${req.url}`);
-//   next();
-// });
+app.use((req, res, next) => {
+  console.log(`${req.method} request to ${req.url}`);
+  next();
+});
 
 app.get("/", (req, res) => {
     res.sendFile("index.html", { root: staticPath });
