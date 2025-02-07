@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airplane Seats</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .plane {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 auto;
+            max-width: 800px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .seat {
+            width: 40px;
+            height: 40px;
+            background-color: #d3d3d3;
+            margin: 5px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .seat:hover {
+            background-color: #a8a8a8;
+        }
+        .seat.occupied {
+            background-color: #ff6b6b;
+            cursor: not-allowed;
+        }
+        .seat.selected {
+            background-color: #6bffa5;
+        }
+        .walkway {
+            width: 20px;
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .legend div {
+            display: flex;
+            align-items: center;
+            margin: 0 10px;
+        }
+        .legend div span {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            margin-right: 5px;
+            border-radius: 3px;
+        }
+        .legend .available span {
+            background-color: #d3d3d3;
+        }
+        .legend .selected span {
+            background-color: #6bffa5;
+        }
+        .legend .occupied span {
+            background-color: #ff6b6b;
+        }
+    </style>
+</head>
+<body>
+    <h1>Airplane Seats</h1>
+    <div class="plane">
+        <div class="section" id="business-class">
+            <h2>Business Class</h2>
+            <!-- Business Class: 4 rows, 3 seats each side -->
+            <div class="row">
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="walkway"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+            </div>
+            <div class="row">
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="walkway"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+            </div>
+            <div class="row">
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="walkway"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+            </div>
+            <div class="row">
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="walkway"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+            </div>
+        </div>
+
+        <div class="section" id="economy-class">
+            <h2>Economy Class</h2>
+            <!-- Economy Class: 6 rows, 4 seats each side -->
+            <div class="row">
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="walkway"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+            </div>
+            <div class="row">
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="walkway"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+            </div>
+            <div class="row">
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="walkway"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+            </div>
+            <div class="row">
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="walkway"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+            </div>
+            <div class="row">
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="walkway"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+            </div>
+            <div class="row">
+                <div class="seat"></div>
+                <div class="seat"></div>
+                <div class="walkway"></div>
+                <div class="seat"></div>
+                <div class="seat"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="legend">
+        <div class="available"><span></span> Available</div>
+        <div class="selected"><span></span> Selected</div>
+        <div class="occupied"><span></span> Occupied</div>
+    </div>
+
+    <script>
+        // Variable to keep track of the currently selected seat
+        let selectedSeat = null;
+
+        // Add event listeners to all seats
+        const seats = document.querySelectorAll('.seat');
+        seats.forEach(seat => {
+            seat.addEventListener('click', function() {
+                // Check if the seat is occupied
+                if (!seat.classList.contains('occupied')) {
+                    // If there is a previously selected seat, reset its color
+                    if (selectedSeat) {
+                        selectedSeat.classList.remove('selected');
+                    }
+                    // Set the current seat as the selected seat
+                    selectedSeat = seat;
+                    // Toggle the selected class
+                    seat.classList.toggle('selected');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

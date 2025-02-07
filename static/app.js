@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const path = require("path");
 const app = express();
 const staticPath = path.join(__dirname, "../static");
+const { spawn } = require("child_process");
 
 mongoose.connect("mongodb+srv://Ansh:airline123@cluster0.zycn0.mongodb.net/");
 const db = mongoose.connection;
@@ -10,6 +11,13 @@ const db = mongoose.connection;
 db.on("error", () => console.log("Error connecting to the database"));
 db.once("open", () => console.log("MongoDb connected"));
 
+const TicketsSchema = new mongoose.Schema({
+  tripType:String,
+  from:String,
+  to:String,
+  departureDate:Date,
+  passengers:Number
+});
 
 
 app.use(express.static(staticPath));
@@ -19,8 +27,23 @@ app.use(express.urlencoded({ extended: true }));
 
 app.post("/available_flights", async (req, res) => {
     const { tripType,from, to, departureDate, passengers } = req.body; 
-    console.log(req.body); 
-    res.redirect("available_flights");
+    const Tickets = mongoose.model('Tickets', TicketsSchema);
+
+    const   tickets= new   Tickets({
+      tripType,
+      from,
+      to,
+      departureDate,
+      passengers
+  });
+  try {
+    await tickets.save();
+    console.log("Record inserted");
+    res.redirect("/available_flights");
+} catch (err) {
+    console.error(err);
+    res.status(500).send("Error inserting record");
+}
            
 });
 app.post("/user_info", async (req, res) => {
@@ -30,10 +53,10 @@ app.post("/user_info", async (req, res) => {
     res.redirect("/user_info");         
 });
 
-// app.use((req, res, next) => {
-//   console.log(`${req.method} request to ${req.url}`);
-//   next();
-// });
+app.use((req, res, next) => {
+  console.log(`${req.method} request to ${req.url}`);
+  next();
+});
 
 app.get("/", (req, res) => {
     res.sendFile("index.html", { root: staticPath });
@@ -41,10 +64,13 @@ app.get("/", (req, res) => {
   app.get("/available_flights", (req, res) => {
     res.sendFile("/available_flights.html", { root: staticPath });
   });
+  app.get("/seat-layout", (req, res) => {
+    res.sendFile("/seat-layout.html", { root: staticPath });
+  });
   app.get("/user_info", (req, res) => {
     res.sendFile("/user_info.html", { root: staticPath });
   });
 
-app.listen(4001, () => {
-        console.log("Listening on port 4001");
+app.listen(4002, () => {
+        console.log("Listening on port 4002");
 });
