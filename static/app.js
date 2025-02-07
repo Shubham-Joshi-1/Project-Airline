@@ -64,10 +64,13 @@ app.get("/", (req, res) => {
   app.get("/available_flights", (req, res) => {
     res.sendFile("/available_flights.html", { root: staticPath });
   });
+  app.get("/seat-layout", (req, res) => {
+    res.sendFile("/seat-layout.html", { root: staticPath });
+  });
   app.get("/user_info", (req, res) => {
     res.sendFile("/user_info.html", { root: staticPath });
   });
 
-app.listen(4001, () => {
-        console.log("Listening on port 4001");
+app.listen(4002, () => {
+        console.log("Listening on port 4002");
 });
