@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+        margin :0px;
+        padding : 0px;
+        background-color: beige;
+        }
+
+        .container{
+         height: 100vh;
+         width:  100%;
+         
+        }
+        .btn-container{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 250px;
+        }
+        button{
+            padding: 10px;
+            margin: 10px;
+            border-radius: 10px;
+        }
+        .queue{
+            width:90%;
+            border: black 1px solid;
+            border-radius: 15px;
+            margin-left: 70px;
+            height: 450px;
+            overflow-y: scroll ;
+        }
+        .vip{
+                height: 190px;
+                border: 1px red solid;
+                margin: 20px;
+                border-radius: 5px;
+
+        }
+        .regular{
+                height: 190px;
+                border: 1px green solid;
+                margin: 20px;
+                border-radius: 5px;
+
+        }
+        h2{
+            text-align: center;
+            text-decoration: underline;
+        }
+        p{
+            margin:10px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="btn-container">
+            <button>CONFIRM</button>
+            <button>ALIGN-PRIORITY</button>
+        </div>
+
+        <div class="queue">
+            <!-- <div class="vip">
+                <h2>VIP TICKET REQUEST</h2>
+                <p></p>
+            </div>
+            <div class="regular">
+                <h2>REGULAR TICKET BOOKING</h2>
+                <p></p>
+            </div> -->
+        </div>
+
+    </div>
+</body>
+    <script>
+        function createDivWithContent(paragraphText, type) {
+            const container = document.querySelector(".queue");
+            if (!container) {
+                console.error("Container div with class 'queue' not found.");
+                return;
+            }
+
+
+            const newDiv = document.createElement("div");
+
+            if (type === "vip") {
+                newDiv.classList.add("vip");
+                const heading = document.createElement("h2");
+                heading.textContent = "Vip Ticket Request";
+
+
+                const paragraph = document.createElement("p");
+                paragraph.textContent = paragraphText;
+                newDiv.appendChild(heading);
+                newDiv.appendChild(paragraph);
+                container.appendChild(newDiv);
+            } else {
+                newDiv.classList.add("regular");
+                const heading = document.createElement("h2");
+                heading.textContent = "Regular Ticket Request";
+
+
+                const paragraph = document.createElement("p");
+                paragraph.textContent = paragraphText;
+                newDiv.appendChild(heading);
+                newDiv.appendChild(paragraph);
+                container.appendChild(newDiv);
+            }
+}
+
+// Usage examples
+createDivWithContent("This is a VIP paragraph!", "vip");
+createDivWithContent( "This is a regular paragraph.", "regular");
+createDivWithContent( "This is a regular paragraph.", "regular");
+createDivWithContent( "This is a regular paragraph.", "vip");
+    </script>
+</html>
