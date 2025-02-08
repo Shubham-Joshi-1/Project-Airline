@@ -3,89 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- <<<<<<< ShreshthManu-/Booking-System
-    <title>Airplane Seats</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 20px;
-        }
-        .plane {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0 auto;
-            max-width: 800px;
-        }
-        .section {
-            margin-bottom: 30px;
-        }
-        .row {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 10px;
-        }
-        .seat {
-            width: 40px;
-            height: 40px;
-            background-color: #d3d3d3;
-            margin: 5px;
-            border-radius: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .seat:hover {
-            background-color: #a8a8a8;
-        }
-        .seat.occupied {
-            background-color: #ff6b6b;
-            cursor: not-allowed;
-        }
-        .seat.selected {
-            background-color: #6bffa5;
-        }
-        .walkway {
-            width: 20px;
-        }
-        .legend {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        .legend div {
-            display: flex;
-            align-items: center;
-            margin: 0 10px;
-        }
-        .legend div span {
-            width: 20px;
-            height: 20px;
-            display: inline-block;
-            margin-right: 5px;
-            border-radius: 3px;
-        }
-        .legend .available span {
-            background-color: #d3d3d3;
-        }
-        .legend .selected span {
-            background-color: #6bffa5;
-        }
-        .legend .occupied span {
-            background-color: #ff6b6b;
-        }
-    </style>
-</head>
-<body>
-    <h1>Airplane Seats</h1>
-    <div class="plane">
-        <div class="section" id="business-class">
-            <h2>Business Class</h2>
-            < --><head>
     <title>Airline Booking System</title>
 
     <link rel="stylesheet" href="style.css">
@@ -106,30 +23,29 @@
         </div>
     </header>
 
-    <!-- Search Section --> 
+    <!-- Search Section -->
     <section class="search-bar">
         <div class="container">
             <h2>Find Your Flight</h2>
-            <form id="searchForm" action="/available_flights" method="POST">
+            <form id="searchForm" action="sumbit" method="post">
                 <div class="trip-options">
                     <label><input type="radio" name="tripType" value="oneWay" checked> One Way</label>
                     <label><input type="radio" name="tripType" value="roundTrip"> Round Trip</label>
                     <label><input type="radio" name="tripType" value="multiCity"> Multi City</label>
                 </div>
-                <input type="text" id="departure" name="from" placeholder="From" required>
-                <input type="text" id="arrival" name="to" placeholder="To" required>
+                <input type="text" id="departure" placeholder="From" required>
+                <input type="text" id="arrival" placeholder="To" required>
                 <label for="departureDate">Departure Date:</label>
-                <input type="date" id="departureDate" name="departureDate" required>
+                <input type="date" id="departureDate" required>
                 <label for="returnDate" style="display: none;">Return Date:</label>
-                <input type="date" id="returnDate" name="returnDate" style="display: none;">
+                <input type="date" id="returnDate" style="display: none;">
                 <div id="multiCityContainer" class="multi-city">
-                    <input type="text" name="city2" placeholder="City 2">
-                    <input type="text" name="city3" placeholder="City 3">
+                    <input type="text" placeholder="City 2">
+                    <input type="text" placeholder="City 3">
                 </div>
-                <input type="number" id="passengers" name="passengers" placeholder="Passengers" min="1" required>
+                <input type="number" id="passengers" placeholder="Passengers" min="1" required>
                 <button type="submit">Search</button>
             </form>
-            
         </div>
     </section>
 
@@ -192,5 +108,3 @@
 </body>
 <script src="script.js"></script>
 </html>
-
-
