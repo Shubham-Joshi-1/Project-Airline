@@ -63,7 +63,7 @@ app.post("/user_info", async (req, res) => {
 
     child.stdout.on("data", (data) => {
       JsonOutput += data.toString();
-      console.log(output);
+      console.log(JsonOutput);
     });
 
     
