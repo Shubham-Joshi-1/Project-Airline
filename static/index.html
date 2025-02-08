@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- <<<<<<< ShreshthManu-/Booking-System
     <title>Airplane Seats</title>
     <style>
         body {
@@ -178,3 +179,112 @@
     </div>
 </body>
 </html>
+======= -->
+    <title>Airline Booking System</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <h1>Airline Booking System</h1>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#flights">Flights</a></li>
+                    <li><a href="#deals">Deals</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Search Section --> 
+    <section class="search-bar">
+        <div class="container">
+            <h2>Find Your Flight</h2>
+            <form id="searchForm" action="/available_flights" method="POST">
+                <div class="trip-options">
+                    <label><input type="radio" name="tripType" value="oneWay" checked> One Way</label>
+                    <label><input type="radio" name="tripType" value="roundTrip"> Round Trip</label>
+                    <label><input type="radio" name="tripType" value="multiCity"> Multi City</label>
+                </div>
+                <input type="text" id="departure" name="from" placeholder="From" required>
+                <input type="text" id="arrival" name="to" placeholder="To" required>
+                <label for="departureDate">Departure Date:</label>
+                <input type="date" id="departureDate" name="departureDate" required>
+                <label for="returnDate" style="display: none;">Return Date:</label>
+                <input type="date" id="returnDate" name="returnDate" style="display: none;">
+                <div id="multiCityContainer" class="multi-city">
+                    <input type="text" name="city2" placeholder="City 2">
+                    <input type="text" name="city3" placeholder="City 3">
+                </div>
+                <input type="number" id="passengers" name="passengers" placeholder="Passengers" min="1" required>
+                <button type="submit">Search</button>
+            </form>
+            
+        </div>
+    </section>
+
+    <!-- Featured Deals Section -->
+    <section id="deals" class="deals">
+        <div class="container">
+            <h2>Featured Deals</h2>
+            <div class="card-container">
+                <div class="card">
+                    <img src="city1.jpg" alt="City 1">
+                    <p>Explore New York - Starting at $299</p>
+                </div>
+                <div class="card">
+                    <img src="city2.jpg" alt="City 2">
+                    <p>Experience Paris - Starting at $399</p>
+                </div>
+                <div class="card">
+                    <img src="city3.jpg" alt="City 3">
+                    <p>Visit Tokyo - Starting at $499</p>
+                </div>
+                <div class="card">
+                    <img src="city7.jpg" alt="City 7">
+                    <p>Explore Rome - Starting at $329</p>
+                </div>
+                <div class="card">
+                    <img src="city8.jpg" alt="City 8">
+                    <p>Marvel at Amsterdam - Starting at $369</p>
+                </div>
+                <div class="card">
+                    <img src="city9.jpg" alt="City 9">
+                    <p>Explore Cape Town - Starting at $459</p>
+                </div>
+                <div class="card">
+                    <img src="city4.jpg" alt="City 4">
+                    <p>Discover Dubai - Starting at $349</p>
+                </div>
+                <div class="card">
+                    <img src="city5.jpg" alt="City 5">
+                    <p>Adventure in Sydney - Starting at $449</p>
+                </div>
+                <div class="card">
+                    <img src="city6.jpg" alt="City 6">
+                    <p>Relax in Bali - Starting at $299</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Airline Booking System. All rights reserved By Team S.</p>
+            <div class="social-links">
+                <a href="#">Facebook</a>
+                <a href="#">Twitter</a>
+                <a href="#">Instagram</a>
+            </div>
+        </div>
+    </footer>
+</body>
+<script src="script.js"></script>
+</html>
+
+
