@@ -84,7 +84,7 @@
     <div class="plane">
         <div class="section" id="business-class">
             <h2>Business Class</h2>
-            <!-- Business Class: 4 rows, 3 seats each side -->
+
             <div class="row">
                 <div class="seat"></div>
                 <div class="seat"></div>
@@ -125,7 +125,6 @@
 
         <div class="section" id="economy-class">
             <h2>Economy Class</h2>
-            <!-- Economy Class: 6 rows, 4 seats each side -->
             <div class="row">
                 <div class="seat"></div>
                 <div class="seat"></div>
@@ -178,22 +177,16 @@
     </div>
 
     <script>
-        // Variable to keep track of the currently selected seat
         let selectedSeat = null;
 
-        // Add event listeners to all seats
         const seats = document.querySelectorAll('.seat');
         seats.forEach(seat => {
             seat.addEventListener('click', function() {
-                // Check if the seat is occupied
                 if (!seat.classList.contains('occupied')) {
-                    // If there is a previously selected seat, reset its color
                     if (selectedSeat) {
                         selectedSeat.classList.remove('selected');
                     }
-                    // Set the current seat as the selected seat
                     selectedSeat = seat;
-                    // Toggle the selected class
                     seat.classList.toggle('selected');
                 }
             });

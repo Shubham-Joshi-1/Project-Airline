@@ -4,12 +4,14 @@ const path = require("path");
 const app = express();
 const staticPath = path.join(__dirname, "../static");
 const { spawn } = require("child_process");
-
+let output="";
 mongoose.connect("mongodb+srv://Ansh:airline123@cluster0.zycn0.mongodb.net/");
 const db = mongoose.connection;
 
 db.on("error", () => console.log("Error connecting to the database"));
 db.once("open", () => console.log("MongoDb connected"));
+
+
 
 const TicketsSchema = new mongoose.Schema({
   tripType:String,
@@ -50,8 +52,33 @@ app.post("/user_info", async (req, res) => {
     console.log("Departure:1");
     const { email,first_name, last_name, month, day, year,gender} = req.body; 
     console.log(req.body); 
-    res.redirect("/user_info");         
+    res.redirect("/user_info"); 
+    const child = spawn("c:\\all_codes\\Project-Airline\\src\\main.exe");
+    child.stdin.write(`$${first_name} ${gender}\n`);
+    child.stdin.end();
+
+    child.stdout.on("data", (data) => {
+      output = data.toString();
+      console.log(output);
+    });
+
+    
+
+    child.stderr.on("data", (data) => {
+      console.error("C++ Error:", data.toString());
+    });
+
+    child.on("close", (code) => {
+      console.log(`C++ process exited with code ${code}`)
+    });
+  
+       
 });
+
+
+
+
+
 
 app.use((req, res, next) => {
   console.log(`${req.method} request to ${req.url}`);
