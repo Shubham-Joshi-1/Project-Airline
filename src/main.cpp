@@ -6,6 +6,8 @@
 #include <queue>
 #include <tuple>
 #include <algorithm>
+#include "json.hpp"
+using json =nlohmann::json;
 using namespace std;
 
 class SeatManager
@@ -242,12 +244,21 @@ public:
         : name(name), contact(contact), email(email), ticketID(ticketID), seatClass(seatClass), row(row), col(col), priority(priority), from(from), to(to) {}
 
     // Display Customer Info
-    void display() const
-    {
-        cout << "Ticket From: " << from << "\nTicket To: " << to << "\nName: " << name << "\nContact: " << contact << "\nEmail: " << email
-             << "\nTicket ID: " << ticketID << "\nSeat Class: " << seatClass
-             << "\nRow: " << row + 1 << "\nColumn: " << col + 1 << "\nPriority: " << priority << "\nSeat Type: " << ((col == 1 || col == 4) ? "Window" : "Aisle") << endl;
-    }
+    json toJSON() const
+        {
+            return json{
+                {"name", name},
+                {"contact", contact},
+                {"email", email},
+                {"ticketID", ticketID},
+                {"seatClass", seatClass},
+                {"row", row},
+                {"col", col},
+                {"priority", priority},
+                {"from", from},
+                {"to", to}};
+        }
+
 };
 
 class CustomerHashMap
@@ -271,12 +282,26 @@ public:
         auto it = customerMap.find(ticketID);
         if (it != customerMap.end())
         {
-            it->second.display(); // Call the display method of CustomerDetails
+            // it->second.display(); // Call the display method of CustomerDetails
+            cout << it->second.toJSON().dump(4) << endl;
+
         }
         else
         {
             cout << "No customer found with Ticket ID: " << ticketID << endl;
         }
+    }
+
+     void sendToNode()
+    {
+        json output;
+        // Correcting the range-based for loop
+        for (const pair<const string, CustomerDetails>& entry : customerMap)
+        {
+            output[entry.first] = entry.second.toJSON();
+        }
+
+        cout << output.dump(4) << endl;  // Pretty print the JSON output with 4 spaces
     }
 
     void getCustomerByPriority(int priority) const
@@ -288,7 +313,9 @@ public:
             auto it = customerMap.find(ticketID);
             if (it != customerMap.end())
             {
-                it->second.display();
+                // it->second.display();
+               cout << it->second.toJSON().dump(4) << endl;
+
             }
         }
         else
@@ -470,6 +497,12 @@ public:
 
 int main()
 {
+    // string first_name ,gender;
+
+    // if (cin >> first_name >> gender ) {
+    //     cout << "Stored:"<<first_name<<" "<<gender<<endl;
+    // }
+
     SeatManager manager(6, 4, 3, 4, 10);
     CustomerHashMap customerMap;
     BookingRequestManager bookingManager(manager, customerMap);
