@@ -118,6 +118,6 @@ app.get("/", (req, res) => {
     res.sendFile("/user_info.html", { root: staticPath });
   });
 
-app.listen(4002, () => {
-        console.log("Listening on port 4002");
+app.listen(4003, () => {
+        console.log("Listening on port 4003");
 });
