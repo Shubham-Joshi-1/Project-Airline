@@ -244,12 +244,21 @@ public:
         : name(name), contact(contact), email(email), ticketID(ticketID), seatClass(seatClass), row(row), col(col), priority(priority), from(from), to(to) {}
 
     // Display Customer Info
-    void display() const
-    {
-        cout << "Ticket From: " << from << "\nTicket To: " << to << "\nName: " << name << "\nContact: " << contact << "\nEmail: " << email
-             << "\nTicket ID: " << ticketID << "\nSeat Class: " << seatClass
-             << "\nRow: " << row + 1 << "\nColumn: " << col + 1 << "\nPriority: " << priority << "\nSeat Type: " << ((col == 1 || col == 4) ? "Window" : "Aisle") << endl;
-    }
+    json toJSON() const
+        {
+            return json{
+                {"name", name},
+                {"contact", contact},
+                {"email", email},
+                {"ticketID", ticketID},
+                {"seatClass", seatClass},
+                {"row", row},
+                {"col", col},
+                {"priority", priority},
+                {"from", from},
+                {"to", to}};
+        }
+
 };
 
 class CustomerHashMap
@@ -273,12 +282,26 @@ public:
         auto it = customerMap.find(ticketID);
         if (it != customerMap.end())
         {
-            it->second.display(); // Call the display method of CustomerDetails
+            // it->second.display(); // Call the display method of CustomerDetails
+            cout << it->second.toJSON().dump(4) << endl;
+
         }
         else
         {
             cout << "No customer found with Ticket ID: " << ticketID << endl;
         }
+    }
+
+     void sendToNode()
+    {
+        json output;
+        // Correcting the range-based for loop
+        for (const pair<const string, CustomerDetails>& entry : customerMap)
+        {
+            output[entry.first] = entry.second.toJSON();
+        }
+
+        cout << output.dump(4) << endl;  // Pretty print the JSON output with 4 spaces
     }
 
     void getCustomerByPriority(int priority) const
@@ -290,7 +313,9 @@ public:
             auto it = customerMap.find(ticketID);
             if (it != customerMap.end())
             {
-                it->second.display();
+                // it->second.display();
+               cout << it->second.toJSON().dump(4) << endl;
+
             }
         }
         else
@@ -472,11 +497,11 @@ public:
 
 int main()
 {
-    string first_name ,gender;
+    // string first_name ,gender;
 
-    if (cin >> first_name >> gender ) {
-        cout << "Stored:"<<first_name<<" "<<gender<<endl;
-    }
+    // if (cin >> first_name >> gender ) {
+    //     cout << "Stored:"<<first_name<<" "<<gender<<endl;
+    // }
 
     SeatManager manager(6, 4, 3, 4, 10);
     CustomerHashMap customerMap;
@@ -486,119 +511,119 @@ int main()
     string seatClass, preference, memberType, name, contact, email, ticketID, from, to;
     int row, col, priority;
 
-    // do
-    // {
-    //     cout << "\nMenu:\n";
-    //     cout << "1. Display Seat Map\n";
-    //     cout << "2. Book a Seat\n";
-    //     cout << "3. Free a Seat\n";
-    //     cout << "4. Display VIP Status\n";
-    //     cout << "5. Display Regular Status\n";
-    //     cout << "6. Check Booking Status\n";
-    //     cout << "7. Check Booking by Priority\n";
-    //     cout << "8. Process Booking Requests (by Class)\n";
-    //     cout << "9. View Pending Booking Requests (by Class)\n";
-    //     cout << "10. Exit\n";
-    //     cout << "Enter your choice: ";
-    //     cin >> choice;
+    do
+    {
+        cout << "\nMenu:\n";
+        cout << "1. Display Seat Map\n";
+        cout << "2. Book a Seat\n";
+        cout << "3. Free a Seat\n";
+        cout << "4. Display VIP Status\n";
+        cout << "5. Display Regular Status\n";
+        cout << "6. Check Booking Status\n";
+        cout << "7. Check Booking by Priority\n";
+        cout << "8. Process Booking Requests (by Class)\n";
+        cout << "9. View Pending Booking Requests (by Class)\n";
+        cout << "10. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
 
-    //     switch (choice)
-    //     {
-    //     case 1:
-    //     {
-    //         cout << "Displaying seat map.\n";
-    //         manager.displaySeatMap();
-    //         break;
-    //     }
-    //     case 2:
-    //     {
-    //         cin.ignore();
-    //         cout << "FROM: ";
-    //         getline(cin, from);
-    //         cout << "TO: ";
-    //         getline(cin, to);
-    //         cout << "Enter Name: ";
-    //         getline(cin, name);
-    //         cout << "Enter Contact: ";
-    //         cin >> contact;
-    //         cout << "Enter Email: ";
-    //         cin >> email;
-    //         manager.displaySeatMap();
-    //         cout << "Enter seat class (economy/business): ";
-    //         cin >> seatClass;
-    //         cout << "Enter row and column (1-based): ";
-    //         cin >> row >> col;
-    //         cout << "Enter member type (VIP/Regular): ";
-    //         cin >> memberType;
+        switch (choice)
+        {
+        case 1:
+        {
+            cout << "Displaying seat map.\n";
+            manager.displaySeatMap();
+            break;
+        }
+        case 2:
+        {
+            cin.ignore();
+            cout << "FROM: ";
+            getline(cin, from);
+            cout << "TO: ";
+            getline(cin, to);
+            cout << "Enter Name: ";
+            getline(cin, name);
+            cout << "Enter Contact: ";
+            cin >> contact;
+            cout << "Enter Email: ";
+            cin >> email;
+            manager.displaySeatMap();
+            cout << "Enter seat class (economy/business): ";
+            cin >> seatClass;
+            cout << "Enter row and column (1-based): ";
+            cin >> row >> col;
+            cout << "Enter member type (VIP/Regular): ";
+            cin >> memberType;
 
-    //         bookingManager.addBookingRequest(name, contact, email, seatClass, row, col, memberType, from, to);
-    //         cout << "Booking request added. Admin needs to confirm the booking.\n";
-    //         break;
-    //     }
+            bookingManager.addBookingRequest(name, contact, email, seatClass, row, col, memberType, from, to);
+            cout << "Booking request added. Admin needs to confirm the booking.\n";
+            break;
+        }
 
-    //     case 3:
-    //     {
-    //         cout << "Freeing a seat.\n";
-    //         cout << "Enter Ticket ID: ";
-    //         string ticketID;
-    //         cin >> ticketID;
-    //         manager.freeSeat(ticketID);
-    //         break;
-    //     }
-    //     case 4:
-    //     {
-    //         cout << "Displaying VIP seat status.\n";
-    //         manager.displayVipStatus();
-    //         break;
-    //     }
-    //     case 5:
-    //     {
-    //         cout << "Displaying Regular seat status.\n";
-    //         manager.displayRegularStatus();
-    //         break;
-    //     }
-    //     case 6:
-    //     {
-    //         cout << "Enter Ticket ID to check booking status: ";
-    //         cin >> ticketID;
-    //         customerMap.getCustomerByTicketID(ticketID);
-    //         break;
-    //     }
-    //     case 7:
-    //     {
-    //         cout << "Checking booking details by Priority Number.\n";
-    //         cout << "Enter Priority Number: ";
-    //         cin >> priority;
-    //         customerMap.getCustomerByPriority(priority);
-    //         break;
-    //     }
-    //     case 8:
-    //     {
-    //         cout << "Enter seat class to process (economy/business): ";
-    //         string seatClass;
-    //         cin >> seatClass;
-    //         bookingManager.processBookingRequests(seatClass);
-    //         break;
-    //     }
-    //     case 9:
-    //     {
-    //         cout << "Enter seat class to view requests (economy/business): ";
-    //         string seatClass;
-    //         cin >> seatClass;
-    //         bookingManager.displayPendingRequests(seatClass);
-    //         break;
-    //     }
-    //     case 10:
-    //     {
-    //         cout << "Exiting the program. Thank you!\n";
-    //         break;
-    //     }
-    //     default:
-    //     {
-    //         cout << "Invalid choice. Please select a valid option.\n";
-    //     }
-    //     }
-    // } while (choice != 10);
+        case 3:
+        {
+            cout << "Freeing a seat.\n";
+            cout << "Enter Ticket ID: ";
+            string ticketID;
+            cin >> ticketID;
+            manager.freeSeat(ticketID);
+            break;
+        }
+        case 4:
+        {
+            cout << "Displaying VIP seat status.\n";
+            manager.displayVipStatus();
+            break;
+        }
+        case 5:
+        {
+            cout << "Displaying Regular seat status.\n";
+            manager.displayRegularStatus();
+            break;
+        }
+        case 6:
+        {
+            cout << "Enter Ticket ID to check booking status: ";
+            cin >> ticketID;
+            customerMap.getCustomerByTicketID(ticketID);
+            break;
+        }
+        case 7:
+        {
+            cout << "Checking booking details by Priority Number.\n";
+            cout << "Enter Priority Number: ";
+            cin >> priority;
+            customerMap.getCustomerByPriority(priority);
+            break;
+        }
+        case 8:
+        {
+            cout << "Enter seat class to process (economy/business): ";
+            string seatClass;
+            cin >> seatClass;
+            bookingManager.processBookingRequests(seatClass);
+            break;
+        }
+        case 9:
+        {
+            cout << "Enter seat class to view requests (economy/business): ";
+            string seatClass;
+            cin >> seatClass;
+            bookingManager.displayPendingRequests(seatClass);
+            break;
+        }
+        case 10:
+        {
+            cout << "Exiting the program. Thank you!\n";
+            break;
+        }
+        default:
+        {
+            cout << "Invalid choice. Please select a valid option.\n";
+        }
+        }
+    } while (choice != 10);
 
     return 0;
 }

@@ -53,8 +53,8 @@ app.post("/user_info", async (req, res) => {
     const { email,first_name, last_name, month, day, year,gender} = req.body; 
     console.log(req.body); 
     res.redirect("/user_info"); 
-    const child = spawn("c:\\all_codes\\Project-Airline\\src\\main.exe");
-    child.stdin.write(`$${first_name} ${gender}\n`);
+    const child = spawn("C:\\Users\\Shreshth Manu Shukla\\OneDrive\\Desktop\\Airplane_ticket\\Project-Airline\\src\\main.exe");
+    child.stdin.write(`${first_name} ${last_name} ${email} ${month} ${day} ${year} ${gender}\n`);
     child.stdin.end();
 
     child.stdout.on("data", (data) => {
@@ -98,6 +98,6 @@ app.get("/", (req, res) => {
     res.sendFile("/user_info.html", { root: staticPath });
   });
 
-app.listen(4002, () => {
-        console.log("Listening on port 4002");
+app.listen(4003, () => {
+        console.log("Listening on port 4003");
 });
