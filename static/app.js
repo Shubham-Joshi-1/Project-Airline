@@ -66,17 +66,13 @@ app.post("/user_info", async (req, res) => {
     // child.stdin.write(`${first_name} ${gender}\n`);
     // child.stdin.end();
 
-<<<<<<< HEAD
-    // child.stdout.on("data", (data) => {
-    //   JsonOutput += data.toString();
-    //   console.log(output);
-    // });
-=======
-    child.stdout.on("data", (data) => {
-      JsonOutput += data.toString();
-      console.log(JsonOutput);
-    });
->>>>>>> 26461b2cc02e3f4f8b07d7cb0b640b3a2bacb074
+
+
+//     child.stdout.on("data", (data) => {
+//       JsonOutput += data.toString();
+//       console.log(JsonOutput);
+//     });
+// >>>>>>> 26461b2cc02e3f4f8b07d7cb0b640b3a2bacb074
 
     
 
