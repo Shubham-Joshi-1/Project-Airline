@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Form submission handling
+
     document.getElementById("searchForm").addEventListener("submit", function (event) {
 
 

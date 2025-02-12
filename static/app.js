@@ -74,7 +74,7 @@ app.post("/user_info", async (req, res) => {
 
     child.on("close", (code) => {
       console.log(`C++ process exited with code ${code}`)
-      res.redirect("/user_info");
+      res.redirect("/seat-layout");
     });
     child.on("close", async (code) => {
       console.log(`C++ process exited with code ${code}`);
@@ -82,7 +82,6 @@ app.post("/user_info", async (req, res) => {
       try {
         const customers = JSON.parse(jsonData);
   
-        // Store each customer in MongoDB
         for (const ticketID in customers) {
           await TicketsSchema.create({ ticketID, ...customers[ticketID] });
         }
@@ -117,7 +116,10 @@ app.get("/", (req, res) => {
   app.get("/user_info", (req, res) => {
     res.sendFile("/user_info.html", { root: staticPath });
   });
+  app.get("/admin", (req, res) => {
+    res.sendFile("/admin.html", { root: staticPath });
+  });
 
 app.listen(4003, () => {
-        console.log("Listening on port 4003");
+        console.log("Listening localhost:4003");
 });
