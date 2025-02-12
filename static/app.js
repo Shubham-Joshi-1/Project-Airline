@@ -15,8 +15,9 @@ db.once("open", () => console.log("MongoDb connected"));
 
 const TicketsSchema = new mongoose.Schema({
   ticketID: String,
-  name: String,
-  contact: String,
+  first_name: String,
+  last_name: String,
+  gender: String,
   email: String,
   seatClass: String,
   row: Number,
@@ -24,6 +25,8 @@ const TicketsSchema = new mongoose.Schema({
   priority: Number,
   from: String,
   to: String,
+  departureDate:Date,
+  tripType:String
 });
 
 
@@ -32,67 +35,89 @@ console.log("Departure:");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// app.post("/available_flights", async (req, res) => {
-//     const { tripType,from, to, departureDate, passengers } = req.body; 
-//     const Tickets = mongoose.model('Tickets', TicketsSchema);
+app.post("/available_flights", async (req, res) => {
+    const { tripType,from, to, departureDate } = req.body; 
+    console.log(req.body);
+    const Tickets = mongoose.model('Tickets', TicketsSchema);
 
-//     const   tickets= new   Tickets({
-//       tripType,
-//       from,
-//       to,
-//       departureDate,
-//       passengers
-//   });
-//   try {
-//     await tickets.save();
-//     console.log("Record inserted");
-//     res.redirect("/available_flights");
-// } catch (err) {
-//     console.error(err);
-//     res.status(500).send("Error inserting record");
-// }
+    const   tickets= new   Tickets({
+      tripType,
+      from,
+      to,
+      departureDate,
+
+  });
+  console.log(tickets);
+  try {
+    await tickets.save();
+    console.log("Record inserted");
+    res.redirect("/available_flights");
+} catch (err) {
+    console.error(err);
+    res.status(500).send("Error inserting record");
+}
            
-// });
+});
 app.post("/user_info", async (req, res) => {
     console.log("Departure:1");
     const { email,first_name, last_name, month, day, year,gender} = req.body; 
     console.log(req.body); 
-    const child = spawn("c:\\all_codes\\Project-Airline\\src\\main.exe");
-    child.stdin.write(`${first_name} ${gender}\n`);
-    child.stdin.end();
+    // const child = spawn("c:\\all_codes\\Project-Airline\\src\\main.exe");
+    // child.stdin.write(`${first_name} ${gender}\n`);
+    // child.stdin.end();
 
-    child.stdout.on("data", (data) => {
-      JsonOutput += data.toString();
-      console.log(output);
-    });
+
+
+//     child.stdout.on("data", (data) => {
+//       JsonOutput += data.toString();
+//       console.log(JsonOutput);
+//     });
+// >>>>>>> 26461b2cc02e3f4f8b07d7cb0b640b3a2bacb074
 
     
 
-    child.stderr.on("data", (data) => {
-      console.error("C++ Error:", data.toString());
-    });
+    // child.stderr.on("data", (data) => {
+    //   console.error("C++ Error:", data.toString());
+    // });
 
     child.on("close", (code) => {
       console.log(`C++ process exited with code ${code}`)
-      res.redirect("/user_info");
+      res.redirect("/seat-layout");
     });
     child.on("close", async (code) => {
       console.log(`C++ process exited with code ${code}`);
   
-      try {
-        const customers = JSON.parse(jsonData);
+    //   try {
+    //     const customers = JSON.parse(jsonData);
   
-        // Store each customer in MongoDB
-        for (const ticketID in customers) {
-          await TicketsSchema.create({ ticketID, ...customers[ticketID] });
-        }
+    //     // Store each customer in MongoDB
+    //     for (const ticketID in customers) {
+    //       await TicketsSchema.create({ ticketID, ...customers[ticketID] });
+    //     }
   
-        res.json({ message: "Customers stored in MongoDB", data: customers });
-      } catch (err) {
-        console.error("Error parsing JSON:", err);
-        res.status(500).send("Invalid JSON data from C++");
-      }
-    });
+    //     res.json({ message: "Customers stored in MongoDB", data: customers });
+    //   } catch (err) {
+    //     console.error("Error parsing JSON:", err);
+    //     res.status(500).send("Invalid JSON data from C++");
+    //   }
+    // });
+    const Tickets = mongoose.model('Tickets', TicketsSchema);
+    const   tickets= Tickets({
+      email,
+      first_name, 
+      last_name,
+      gender
+
+  });
+  console.log(tickets);
+  try {
+    await tickets.save();
+    console.log("Record inserted");
+    res.redirect("/user_info");
+} catch (err) {
+    console.error(err);
+    res.status(500).send("Error inserting record");
+}
   });
 
 
@@ -117,7 +142,12 @@ app.get("/", (req, res) => {
   app.get("/user_info", (req, res) => {
     res.sendFile("/user_info.html", { root: staticPath });
   });
+  app.get("/admin", (req, res) => {
+    res.sendFile("/admin.html", { root: staticPath });
+  });
 
-app.listen(4003, () => {
-        console.log("Listening on port 4003");
+
+app.listen(4005, () => {
+        console.log("Listening on port 4005");
+
 });

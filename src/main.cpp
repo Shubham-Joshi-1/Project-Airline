@@ -510,9 +510,10 @@ public:
 
 int main()
 {
+    // getCustomerByTicketID(const string &ticketID);
     // string first_name ,gender;
 
-    // if (cin >> first_name >> gender ) {
+    // if (cin >> first_name >> genders ) {
     //     cout << "Stored:"<<first_name<<" "<<gender<<endl;
     // }
 
