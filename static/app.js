@@ -15,15 +15,18 @@ db.once("open", () => console.log("MongoDb connected"));
 
 const TicketsSchema = new mongoose.Schema({
   ticketID: String,
-  name: String,
-  contact: String,
+  firstName: String,
+  lastName: String,
   email: String,
   seatClass: String,
   row: Number,
   col: Number,
   priority: Number,
   from: String,
-  to: String,
+  to: String, 
+  gender: String,
+  departureDate: Date,
+  dob: Date
 });
 
 
@@ -55,7 +58,7 @@ app.use(express.urlencoded({ extended: true }));
 // });
 app.post("/user_info", async (req, res) => {
     console.log("Departure:1");
-    const { email,first_name, last_name, month, day, year,gender} = req.body; 
+    const { email,first_name, last_name,member_type,seat_class,gender} = req.body; 
     console.log(req.body); 
     const child = spawn("c:\\all_codes\\Project-Airline\\src\\main.exe");
     child.stdin.write(`${first_name} ${gender}\n`);

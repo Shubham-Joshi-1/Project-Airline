@@ -236,14 +236,14 @@ public:
     string from;
     string to;
     string gender;
-    int departureDate;
-    int dob;
+    string departureDate;
+    string dob;
     int row, col;
     int priority;
 
     // Constructor
     CustomerDetails(const string &firstName, const string &lastName, const string &email,
-                    const string &ticketID, const string &seatClass, int row, int col, int priority, const string &from, const string &to,const string &gender,int departureDate,int dob)
+                    const string &ticketID, const string &seatClass, int row, int col, int priority, const string &from, const string &to,const string &gender,const string &departureDate,const string &dob)
         : firstName(firstName), lastName(lastName), email(email), ticketID(ticketID), seatClass(seatClass), row(row), col(col), priority(priority), from(from), to(to), gender(gender),departureDate(departureDate),dob(dob) {}
 
     // Display Customer Info
@@ -277,7 +277,7 @@ private:
 public:
     // Emplace customer record directly into the map
     void addCustomer(const string &ticketID, const string &firstName, const string &lastName,
-                     const string &email, const string &seatClass, int row, int col, int priority, const string &from, const string &to,const string &gender, int departureDate,int dob)
+                     const string &email, const string &seatClass, int row, int col, int priority, const string &from, const string &to,const string &gender, const string &departureDate,const string &dob)
     {
         customerMap.emplace(ticketID, CustomerDetails(firstName, lastName, email, ticketID, seatClass, row, col, priority, from, to,gender,departureDate,dob));
         priorityMap[priority] = ticketID;
@@ -335,8 +335,8 @@ public:
 // Comparator for the priority queue (higher priority first)
 struct BookingComparator
 {
-    bool operator()(const tuple<int, string, string, string, string, int, int, string, string,string ,int ,int> &a,
-                    const tuple<int, string, string, string, string, int, int, string, string, string, int, int> &b)
+    bool operator()(const tuple<int, string, string, string, string, int, int, string, string,string ,string ,string> &a,
+                    const tuple<int, string, string, string, string, int, int, string, string, string, string, string> &b)
     {
         return get<0>(a) < get<0>(b); // Higher priority first
     }
@@ -348,13 +348,13 @@ private:
     int currentRegularPriority = 26;
     int currentVIPPriority = 36;
 
-    priority_queue<tuple<int, string, string, string, string, int, int, string, string, string, int, int>,
-                   vector<tuple<int, string, string, string, string, int, int, string, string, string, int, int>>,
+    priority_queue<tuple<int, string, string, string, string, int, int, string, string, string, string, string>,
+                   vector<tuple<int, string, string, string, string, int, int, string, string, string, string, string>>,
                    BookingComparator>
         economyQueue;
 
-    priority_queue<tuple<int, string, string, string, string, int, int, string, string, string, int, int>,
-                   vector<tuple<int, string, string, string, string, int, int, string, string, string, int, int>>,
+    priority_queue<tuple<int, string, string, string, string, int, int, string, string, string, string, string>,
+                   vector<tuple<int, string, string, string, string, int, int, string, string, string, string, string>>,
                    BookingComparator>
         businessQueue;
 
@@ -366,7 +366,7 @@ public:
         : seatManager(sm), customerMap(cm) {}
 
     void addBookingRequest(const string &firstName, const string &lastName, const string &email,
-                           const string &seatClass, int row, int col, const string &memberType, const string &from, const string &to,const string &gender,int departureDate,int dob)
+                           const string &seatClass, int row, int col, const string &memberType, const string &from, const string &to,const string &gender,const string &departureDate,const string &dob)
     {
         int priority = 0;
 
@@ -420,8 +420,8 @@ public:
 
     void processBookingRequests(const string &seatClass)
     {
-        priority_queue<tuple<int, string, string, string, string, int, int, string, string, string, int, int>,
-                       vector<tuple<int, string, string, string, string, int, int, string, string, string, int, int>>,
+        priority_queue<tuple<int, string, string, string, string, int, int, string, string, string, string, string>,
+                       vector<tuple<int, string, string, string, string, int, int, string, string, string, string, string>>,
                        BookingComparator> &queue =
             (seatClass == "economy") ? economyQueue : businessQueue;
 
@@ -447,8 +447,8 @@ public:
             string from = get<7>(request);
             string to = get<8>(request);
             string gender = get<9>(request);
-            int departureDate = get<10>(request);
-            int dob = get<11>(request);
+            string departureDate = get<10>(request);
+            string dob = get<11>(request);
 
             // Check if the seat can be allocated
             if (seatManager.allocateSeat(seatClass, row, col, priority >= 27 ? "VIP" : "Regular"))
@@ -500,8 +500,8 @@ public:
             int col = get<6>(request);
             string from = get<7>(request);
             string to = get<8>(request);
-            int departureDate = get<10>(request);
-            int dob = get<11>(request);
+            string departureDate = get<10>(request);
+            string dob = get<11>(request);
             cout << "First_Name: " << firstName<<"Last_Name"<<lastName << ", Priority: " << priority
                  << ", Seat: Row " << row << ", Col " << col << " Ticket From: " << from << " Ticket To: " << to <<"Deeparture date :"<<departureDate<<"DOB : "<<dob<< endl;
         }
@@ -521,8 +521,8 @@ int main()
     BookingRequestManager bookingManager(manager, customerMap);
 
     int choice;
-    string seatClass, preference, memberType, firstName,lastName, email, ticketID, from, to,gender;
-    int row, col, priority,departureDate,dob;
+    string seatClass, preference, memberType, firstName,lastName, email, ticketID, from, to,gender,departureDate,dob;
+    int row, col, priority;
 
     do
     {
@@ -557,6 +557,7 @@ int main()
             getline(cin, to);
             cout << "Departure_Date(DDMMYY): ";
             cin >> departureDate;
+            cin.ignore();
             cout << "Enter First_Name: ";
             getline(cin, firstName);
             cout << "Enter Last_Name: ";
@@ -565,6 +566,8 @@ int main()
             cin >> email;
             cout << "Enter DOB(DDMMYY):";
             cin>>dob;
+            cout << "Enter your Gender:";
+            cin>>gender;
             manager.displaySeatMap();
             cout << "Enter seat class (economy/business): ";
             cin >> seatClass;
