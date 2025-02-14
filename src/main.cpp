@@ -510,9 +510,10 @@ public:
 
 int main()
 {
+    // getCustomerByTicketID(const string &ticketID);
     // string first_name ,gender;
 
-    // if (cin >> first_name >> gender ) {
+    // if (cin >> first_name >> genders ) {
     //     cout << "Stored:"<<first_name<<" "<<gender<<endl;
     // }
 
@@ -555,7 +556,7 @@ int main()
             getline(cin, from);
             cout << "TO: ";
             getline(cin, to);
-            cout << "Departure_Date(DDMMYY): ";
+            cout << "Departure_Date(DDMMYYYY): ";
             cin >> departureDate;
             cin.ignore();
             cout << "Enter First_Name: ";
@@ -564,7 +565,7 @@ int main()
             cin >> lastName;
             cout << "Enter Email: ";
             cin >> email;
-            cout << "Enter DOB(DDMMYY):";
+            cout << "Enter DOB(DDMMYYYY):";
             cin>>dob;
             cout << "Enter your Gender:";
             cin>>gender;
