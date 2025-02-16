@@ -142,16 +142,16 @@
         <div class="form-group">
             <label>Seat Class*</label>
             <div class="seat-class-group">
-                <label><input type="radio" name="seat-class" value="economy" required> Economy</label>
-                <label><input type="radio" name="seat-class" value="business" required> Business</label>
+                <label><input type="radio" name="seat_class" value="economy" required> Economy</label>
+                <label><input type="radio" name="seat_class" value="business" required> Business</label>
             </div>
         </div>
 
         <div class="form-group">
             <label>Member Type*</label>
             <div class="member-type-group">
-                <label><input type="radio" name="member-type" value="vip" required> VIP</label>
-                <label><input type="radio" name="member-type" value="regular" required> Regular</label>
+                <label><input type="radio" name="member_type" value="vip" required> VIP</label>
+                <label><input type="radio" name="member_type" value="regular" required> Regular</label>
             </div>
         </div>
 
@@ -166,5 +166,12 @@
         </div>
     </form>
     </div>
+    <script>
+        document.querySelector("form").addEventListener("submit", (event) => {
+            const formData = new FormData(event.target);
+            console.log(Object.fromEntries(formData)); // Check what is actually being sent
+        });
+    </script>
+    
 </body>
 </html>

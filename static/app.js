@@ -1,9 +1,11 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
+const cors = require("cors");
 const app = express();
 const staticPath = path.join(__dirname, "../static");
 const { spawn } = require("child_process");
+const { Console } = require("console");
 let JsonOutput="";
 mongoose.connect("mongodb+srv://Ansh:airline123@cluster0.zycn0.mongodb.net/");
 const db = mongoose.connection;
@@ -19,73 +21,78 @@ const TicketsSchema = new mongoose.Schema({
   last_name: String,
   gender: String,
   email: String,
-  seatClass: String,
+  seat_class: String,
+  member_type: String,
   row: Number,
   col: Number,
   priority: Number,
-  from: String,
-  to: String,
-  departureDate:Date,
-  tripType:String
+  departure: String, 
+  arrival: String, 
+  departureDate: Date,
+  tripType: String
 });
-
-
+app.use(cors());
 app.use(express.static(staticPath));
 console.log("Departure:");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.post("/available_flights", async (req, res) => {
-    const { tripType,from, to, departureDate } = req.body; 
-    console.log(req.body);
-    const Tickets = mongoose.model('Tickets', TicketsSchema);
+  console.log("Received request:", req.body);
+  const Tickets = mongoose.model('Tickets', TicketsSchema);
 
-    const   tickets= new   Tickets({
+  const { tripType, departure, arrival, departureDate } = req.body; 
+
+  const newTicket = new Tickets({
       tripType,
-      from,
-      to,
-      departureDate,
-
+      departure,
+      arrival,
+      departureDate
   });
-  console.log(tickets);
+
   try {
-    await tickets.save();
-    console.log("Record inserted");
-    res.redirect("/available_flights");
-} catch (err) {
-    console.error(err);
-    res.status(500).send("Error inserting record");
-}
-           
+      await newTicket.save();
+      console.log("Record inserted");
+
+    function getRandomNumber(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+      res.json([
+          {tripType, departure, arrival, departureDate ,price:getRandomNumber(5000, 10000)},
+          
+      ]);
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Error inserting record" });
+  }
 });
+
 app.post("/user_info", async (req, res) => {
-    console.log("Departure:1");
-    const { email,first_name, last_name, month, day, year,gender} = req.body; 
-    console.log(req.body); 
+    const { email,first_name, last_name, gender,seat_class,member_type} = req.body; 
+    // res.json(req.body);
     // const child = spawn("c:\\all_codes\\Project-Airline\\src\\main.exe");
     // child.stdin.write(`${first_name} ${gender}\n`);
     // child.stdin.end();
 
 
 
-//     child.stdout.on("data", (data) => {
-//       JsonOutput += data.toString();
-//       console.log(JsonOutput);
-//     });
-// >>>>>>> 26461b2cc02e3f4f8b07d7cb0b640b3a2bacb074
+    // child.stdout.on("data", (data) => {
+    //   JsonOutput += data.toString();
+    //   console.log(JsonOutput);
+    // });
+
 
     
-
     // child.stderr.on("data", (data) => {
     //   console.error("C++ Error:", data.toString());
     // });
 
-    child.on("close", (code) => {
-      console.log(`C++ process exited with code ${code}`)
-      res.redirect("/seat-layout");
-    });
-    child.on("close", async (code) => {
-      console.log(`C++ process exited with code ${code}`);
+    // child.on("close", (code) => {
+    //   console.log(`C++ process exited with code ${code}`)
+    //   res.redirect("/seat-layout");
+    // });
+    // child.on("close", async (code) => {
+    //   console.log(`C++ process exited with code ${code}`);
   
     //   try {
     //     const customers = JSON.parse(jsonData);
@@ -102,18 +109,20 @@ app.post("/user_info", async (req, res) => {
     //   }
     // });
     const Tickets = mongoose.model('Tickets', TicketsSchema);
-    const   tickets= Tickets({
+    const   tickets= new Tickets({
       email,
-      first_name, 
+      first_name,
       last_name,
-      gender
+      gender,
+      seat_class,
+      member_type
 
   });
   console.log(tickets);
   try {
     await tickets.save();
     console.log("Record inserted");
-    res.redirect("/user_info");
+    res.redirect("seat-layout.html");
 } catch (err) {
     console.error(err);
     res.status(500).send("Error inserting record");
@@ -131,11 +140,13 @@ app.use((req, res, next) => {
 });
 
 app.get("/", (req, res) => {
+  Console.log("reQUEST");
     res.sendFile("index.html", { root: staticPath });
   });
   app.get("/available_flights", (req, res) => {
     res.sendFile("/available_flights.html", { root: staticPath });
   });
+
   app.get("/seat-layout", (req, res) => {
     res.sendFile("/seat-layout.html", { root: staticPath });
   });
@@ -147,7 +158,7 @@ app.get("/", (req, res) => {
   });
 
 
-app.listen(4005, () => {
-        console.log("Listening on port 4005");
+app.listen(3002, () => {
+        console.log("Listening on localhost:3002");
 
 });
