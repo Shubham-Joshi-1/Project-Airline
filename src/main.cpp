@@ -502,8 +502,8 @@ public:
             string to = get<8>(request);
             string departureDate = get<10>(request);
             string dob = get<11>(request);
-            cout << "First_Name: " << firstName<<"Last_Name"<<lastName << ", Priority: " << priority
-                 << ", Seat: Row " << row << ", Col " << col << " Ticket From: " << from << " Ticket To: " << to <<"Deeparture date :"<<departureDate<<"DOB : "<<dob<< endl;
+            cout << "First_Name: " << firstName<<", Last_Name"<<lastName << ", Priority: " << priority
+                 << ", Seat: Row " << row << ", Col " << col << ", Ticket From: " << from << ", Ticket To: " << to <<", Deeparture date :"<<departureDate<<", DOB : "<<dob<< endl;
         }
     }
 };
@@ -541,16 +541,10 @@ int main()
         cout << "Enter your choice: ";
         cin >> choice;
 
-        switch (choice)
-        {
-        case 1:
-        {
+        if (choice == 1) {
             cout << "Displaying seat map.\n";
             manager.displaySeatMap();
-            break;
-        }
-        case 2:
-        {
+        } else if (choice == 2) {
             cin.ignore();
             cout << "FROM: ";
             getline(cin, from);
@@ -566,9 +560,9 @@ int main()
             cout << "Enter Email: ";
             cin >> email;
             cout << "Enter DOB(DDMMYYYY):";
-            cin>>dob;
+            cin >> dob;
             cout << "Enter your Gender:";
-            cin>>gender;
+            cin >> gender;
             manager.displaySeatMap();
             cout << "Enter seat class (economy/business): ";
             cin >> seatClass;
@@ -577,74 +571,46 @@ int main()
             cout << "Enter member type (VIP/Regular): ";
             cin >> memberType;
 
-            bookingManager.addBookingRequest(firstName, lastName, email, seatClass, row, col, memberType, from, to,gender,departureDate,dob);
+            bookingManager.addBookingRequest(firstName, lastName, email, seatClass, row, col, memberType, from, to, gender, departureDate, dob);
             cout << "Booking request added. Admin needs to confirm the booking.\n";
-            break;
-        }
-
-        case 3:
-        {
+        } else if (choice == 3) {
             cout << "Freeing a seat.\n";
             cout << "Enter Ticket ID: ";
             string ticketID;
             cin >> ticketID;
             manager.freeSeat(ticketID);
-            break;
-        }
-        case 4:
-        {
+        } else if (choice == 4) {
             cout << "Displaying VIP seat status.\n";
             manager.displayVipStatus();
-            break;
-        }
-        case 5:
-        {
+        } else if (choice == 5) {
             cout << "Displaying Regular seat status.\n";
             manager.displayRegularStatus();
-            break;
-        }
-        case 6:
-        {
+        } else if (choice == 6) {
             cout << "Enter Ticket ID to check booking status: ";
             cin >> ticketID;
             customerMap.getCustomerByTicketID(ticketID);
-            break;
-        }
-        case 7:
-        {
+        } else if (choice == 7) {
             cout << "Checking booking details by Priority Number.\n";
             cout << "Enter Priority Number: ";
             cin >> priority;
             customerMap.getCustomerByPriority(priority);
-            break;
-        }
-        case 8:
-        {
+        } else if (choice == 8) {
             cout << "Enter seat class to process (economy/business): ";
             string seatClass;
             cin >> seatClass;
             bookingManager.processBookingRequests(seatClass);
-            break;
-        }
-        case 9:
-        {
+        } else if (choice == 9) {
             cout << "Enter seat class to view requests (economy/business): ";
             string seatClass;
             cin >> seatClass;
             bookingManager.displayPendingRequests(seatClass);
-            break;
-        }
-        case 10:
-        {
+        } else if (choice == 10) {
             cout << "Exiting the program. Thank you!\n";
-            break;
-        }
-        default:
-        {
+        } else {
             cout << "Invalid choice. Please select a valid option.\n";
         }
-        }
-    } while (choice != 10);
+    }while(choice!=10);
+
 
     return 0;
 }
