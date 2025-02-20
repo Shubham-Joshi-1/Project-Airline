@@ -497,14 +497,16 @@ public:
 
 int main()
 {
+    SeatManager manager(6, 4, 3, 4, 10);
     // getCustomerByTicketID(const string &ticketID);
-    // string first_name ,gender;
+    string  member_type,seat_class;
+    int row ,col;
 
-    // if (cin >> first_name >> genders ) {
-    //     cout << "Stored:"<<first_name<<" "<<gender<<endl;
-    // }
+    if (cin >>member_type>>seat_class>>row>>col) {
+        cout << manager.generateTicketID( seat_class,  row,  col, member_type)<<endl;
+    }
 
-    // SeatManager manager(6, 4, 3, 4, 10);
+
     // CustomerHashMap customerMap;
     // BookingRequestManager bookingManager(manager, customerMap);
 
