@@ -502,8 +502,11 @@ int main()
     string  member_type,seat_class;
     int row ,col;
 
-    if (cin >>member_type>>seat_class>>row>>col) {
+    if (cin >>seat_class>>member_type>>row>>col) {
         cout << manager.generateTicketID( seat_class,  row,  col, member_type)<<endl;
+        cout << "Member Type: " << member_type << endl;
+        cout << "Seat Class: " << seat_class << endl;
+        cout << "Row: " << row << ", Col: " << col << endl;
     }
 
 

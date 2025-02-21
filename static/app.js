@@ -30,7 +30,8 @@ const TicketsSchema = new mongoose.Schema({
   arrival: String, 
   departureDate: Date,
   tripType: String,
-  seat:String
+  row:Number,
+  col:Number
 });
 app.use(cors());
 app.use(express.static(staticPath));
@@ -113,6 +114,10 @@ app.post("/user_info", async (req, res) => {
         res.status(500).send("Error inserting or updating record");
     }
 });
+function parseSeat(seatString) {
+  const [row, col] = seatString.split("-").map(Number);
+  return { row, col };
+}
 
 
 app.post("/seat_layout", async (req, res) => {
@@ -121,10 +126,12 @@ app.post("/seat_layout", async (req, res) => {
   const sessionId = req.session.sessionId;
   const Tickets = mongoose.model("Tickets", TicketsSchema);
 
+  const { row, col } = parseSeat(seat);
+
   try {
     await Tickets.findOneAndUpdate(
       { sessionId },
-      { $set: { seat } },
+      { $set: { row:row ,col:col } },
       { new: true }
     );
   } catch (err) {
@@ -136,7 +143,7 @@ app.post("/seat_layout", async (req, res) => {
   try {
     const users = await Tickets.findOne(
       { sessionId },
-      { member_type: 1, seat_class: 1, _id: 0 }
+      { member_type: 1, seat_class: 1, row:1, col:1, _id: 0 }
     );
 
     if (!users) {
@@ -145,15 +152,17 @@ app.post("/seat_layout", async (req, res) => {
 
     let seat_class = users.seat_class;
     let member_type = users.member_type;
+    let row = users.row;
+    let col = users.col;
     console.log("Users:", users);
 
     const child = spawn("c:\\all_codes\\Project-Airline\\src\\main.exe");
 
-    child.stdin.write(` ${seat_class} ${member_type} 1 2\n`);
+    child.stdin.write(` ${seat_class} ${member_type} ${row} ${col}\n`);
     child.stdin.end();
 
     child.stdout.on("data", async (data) => {
-      JsonOutput = data.toString().trim();
+      JsonOutput += data.toString().trim();
       console.log("Result from C++:", JsonOutput);
 
       try {
@@ -164,7 +173,7 @@ app.post("/seat_layout", async (req, res) => {
         );
 
         console.log("ticketID stored in MongoDB:", updatedTicket);
-        res.redirect("/seat_layout");
+        res.redirect("/");
       } catch (err) {
         console.error("Error updating ticketID in MongoDB:", err);
         res.status(500).send("Error updating ticketID in MongoDB");
@@ -192,7 +201,6 @@ app.use((req, res, next) => {
 });
 
 app.get("/", (req, res) => {
-  Console.log("reQUEST");
     res.sendFile("index.html", { root: staticPath });
   });
   app.get("/available_flights", (req, res) => {
