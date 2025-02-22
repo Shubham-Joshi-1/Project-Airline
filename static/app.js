@@ -16,23 +16,75 @@ db.once("open", () => console.log("MongoDb connected"));
 
 
 
-const TicketsSchema = new mongoose.Schema({
-  ticketID: String,
-  sessionId: String,
-  first_name: String,
-  last_name: String,
-  gender: String,
+// const TicketsSchema = new mongoose.Schema({
+//   ticketID: String,
+//   sessionId: String,
+//   first_name: String,
+//   last_name: String,
+//   gender: String,
+//   email: String,
+//   seat_class: String,
+//   member_type: String,
+//   priority: Number,
+//   departure: String, 
+//   arrival: String, 
+//   departureDate: Date,
+//   tripType: String,
+//   row:Number,
+//   col:Number
+// });
+
+const seat_layout_schema=new mongoose.Schema({ 
+  row: Number,
+  cols:Number,
+  member_type: String,  
+  ticket_id: String
+    )};
+const partial_ticket_schema=new mongoose.Schema({
+  from: String,
+  to: String,
+  depart_date: Date,
+  f_name: String,
+  l_name: String,
   email: String,
-  seat_class: String,
-  member_type: String,
-  priority: Number,
-  departure: String, 
-  arrival: String, 
-  departureDate: Date,
-  tripType: String,
-  row:Number,
-  col:Number
-});
+  gender: String,
+  dob: Date,
+  session_id: String,
+  trip_type:String,
+  flight_name: String,
+  flight_no: Number,
+  flight_price:Number    
+    )};
+const final_ticket_schema=new mongoose.Schema({
+  from: String,
+  to: String,
+  depart_date: Date,
+  f_name: String,
+  l_name: String,
+  email: String,
+  gender: String,
+  dob: Date,
+  session_id: String,
+  trip_type:String,
+  flight_name: String,
+  flight_no: Number,
+  flight_price:Number,
+
+  ticket_id:String,
+  priority:Number
+    )};
+const admin_authentication_schema=new mongoose.Schema({
+  username: String,
+  password: String
+
+    )};
+const priority_schema=new mongoose.Schema({
+  priority_vip_count: Number,
+  priority_regular_count: Number
+    )};
+  
+                                              
+  
 app.use(cors());
 app.use(express.static(staticPath));
 console.log("Departure:");
