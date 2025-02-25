@@ -113,7 +113,7 @@ app.use((req, res, next) => {
 });
 
 app.post("/available_flights", async (req, res) => {
-  const Tickets = mongoose.model('Tickets', TicketsSchema);
+  const Tickets = mongoose.model('Tickets' , TicketsSchema);
 
   const { tripType, departure, arrival, departureDate } = req.body; 
   const sessionId = req.session.sessionId;
@@ -146,7 +146,7 @@ app.post("/available_flights", async (req, res) => {
 
 
 app.post("/user_info", async (req, res) => {
-    const { email,first_name, last_name, gender,seat_class,member_type} = req.body; 
+    const { email,first_name, last_name, gender} = req.body; 
     const sessionId = req.session.sessionId;
 
     const Tickets = mongoose.model('Tickets', TicketsSchema);
@@ -155,7 +155,7 @@ app.post("/user_info", async (req, res) => {
       let ticket = await Tickets.findOneAndUpdate(
         { sessionId }, 
         { 
-            $set: { email, first_name, last_name, gender, seat_class, member_type } 
+            $set: { email, first_name, last_name, gender} 
         }, 
         { new: true } 
     );
@@ -174,7 +174,7 @@ function parseSeat(seatString) {
 
 
 app.post("/seat_layout", async (req, res) => {
-  const { seat } = req.body;
+  const { seat,member_type,seat_class } = req.body;
   console.log(seat);
   const sessionId = req.session.sessionId;
   const Tickets = mongoose.model("Tickets", TicketsSchema);
@@ -192,57 +192,29 @@ app.post("/seat_layout", async (req, res) => {
     return res.status(500).send("Error inserting or updating record");
   }
 
-  let JsonOutput = "";
+  
+});
+
+app.post('/admin_login', async (req, res) => {
   try {
-    const users = await Tickets.findOne(
-      { sessionId },
-      { member_type: 1, seat_class: 1, row:1, col:1, _id: 0 }
-    );
+      const { email, password } = req.body;
+      const user = await Admin.findOne({ email });
 
-    if (!users) {
-      return res.status(404).send("User not found");
-    }
-
-    let seat_class = users.seat_class;
-    let member_type = users.member_type;
-    let row = users.row;
-    let col = users.col;
-    console.log("Users:", users);
-
-    const child = spawn("c:\\all_codes\\Project-Airline\\src\\main.exe");
-
-    child.stdin.write(` ${seat_class} ${member_type} ${row} ${col}\n`);
-    child.stdin.end();
-
-    child.stdout.on("data", async (data) => {
-      JsonOutput += data.toString().trim();
-      console.log("Result from C++:", JsonOutput);
-
-      try {
-        let updatedTicket = await Tickets.findOneAndUpdate(
-          { sessionId },
-          { $set: { ticketID: JsonOutput } },
-          { new: true }
-        );
-
-        console.log("ticketID stored in MongoDB:", updatedTicket);
-        res.redirect("/");
-      } catch (err) {
-        console.error("Error updating ticketID in MongoDB:", err);
-        res.status(500).send("Error updating ticketID in MongoDB");
+      if (!user) {
+          return res.status(500).json({ message: "Admin not found" });
+          
       }
-    });
 
-    child.stderr.on("data", (data) => {
-      console.error("C++ Error:", data.toString());
-    });
+      const isMatch = await compare(password, user.password);
 
-    child.on("close", (code) => {
-      console.log(`C++ process exited with code ${code}`);
-    });
+      if (isMatch) {
+         return res.redirect("admin.html");
+      } else {
+        return res.status(500).json({ message: "Password didn't match" });
+      }
   } catch (error) {
-    console.error("Error fetching users:", error);
-    res.status(500).send("Error fetching user data");
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
   }
 });
 
@@ -268,6 +240,9 @@ app.get("/", (req, res) => {
   });
   app.get("/admin", (req, res) => {
     res.sendFile("/admin.html", { root: staticPath });
+  });
+  app.get("/admin_login", (req, res) => {
+    res.sendFile("/admin_login.html", { root: staticPath });
   });
 
 
