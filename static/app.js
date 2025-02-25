@@ -39,7 +39,8 @@ const seat_layout_schema=new mongoose.Schema({
   cols:Number,
   member_type: String,  
   ticket_id: String
-    )};
+  });
+
 const partial_ticket_schema=new mongoose.Schema({
   from: String,
   to: String,
@@ -54,7 +55,7 @@ const partial_ticket_schema=new mongoose.Schema({
   flight_name: String,
   flight_no: Number,
   flight_price:Number    
-    )};
+});
 const final_ticket_schema=new mongoose.Schema({
   from: String,
   to: String,
@@ -72,16 +73,16 @@ const final_ticket_schema=new mongoose.Schema({
 
   ticket_id:String,
   priority:Number
-    )};
+    });
 const admin_authentication_schema=new mongoose.Schema({
   username: String,
   password: String
 
-    )};
+    });
 const priority_schema=new mongoose.Schema({
   priority_vip_count: Number,
   priority_regular_count: Number
-    )};
+    });
   
                                               
   
