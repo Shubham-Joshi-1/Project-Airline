@@ -97,6 +97,21 @@ app.post("/user_info", async (req, res) => {
 
 
 
+// TICKET ID GENERATION :
+
+function generateTicketID(seatClass, row, col, priority) {
+  let ticketID = seatClass.charAt(0); // 'E' for economy or 'B' for business
+  
+  if (priority === "VIP") {
+      ticketID += `VIP_R${row}C${col}`;
+  } else {
+      ticketID += `_R${row}C${col}`;
+  }
+
+  return ticketID;
+}
+
+
 
 
 
@@ -121,3 +136,8 @@ app.get("/", (req, res) => {
 app.listen(4003, () => {
         console.log("Listening on port 4003");
 });
+
+
+
+
+

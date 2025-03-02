@@ -1,3 +1,41 @@
+document.addEventListener("DOMContentLoaded", function () {
+    const checkTicketStatusButton = document.getElementById("check-ticket-status");
+    const ticketStatusSection = document.getElementById("ticket-status-section");
+    const ticketDetails = document.getElementById("ticket-details");
+    const submitTicketIdButton = document.getElementById("submit-ticket-id");
+    const cancelTicketButton = document.getElementById("cancel-ticket");
+
+    // Prevent form submission when clicking the "Check Ticket Status" button
+    checkTicketStatusButton.addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent form submission
+        ticketStatusSection.style.display = "block";
+        ticketDetails.style.display = "none";
+    });
+
+    submitTicketIdButton.addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent form submission
+        const ticketId = document.getElementById("ticket-id").value;
+        if (ticketId) {
+            // Display dummy ticket details
+            document.getElementById("ticket-id-display").textContent = ticketId;
+            ticketDetails.style.display = "block";
+        } else {
+            alert("Please enter a valid Ticket ID.");
+        }
+    });
+
+    cancelTicketButton.addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent form submission
+        if (confirm("Are you sure you want to cancel this ticket?")) {
+            alert("Ticket canceled successfully.");
+            ticketStatusSection.style.display = "none";
+            ticketDetails.style.display = "none";
+        }
+    });
+});
+
+
+
 const cities = [
     "Mumbai", "Delhi", "Bangalore", "Hyderabad", "Ahmedabad", "Chennai", "Kolkata", "Surat", "Pune", "Jaipur",
     "Lucknow", "Kanpur", "Nagpur", "Indore", "Thane", "Bhopal", "Visakhapatnam", "Pimpri-Chinchwad", "Patna",
@@ -107,4 +145,10 @@ function autocomplete(input, suggestions) {
 document.addEventListener("DOMContentLoaded", function () {
     autocomplete(document.getElementById("from-city"), cities);
     autocomplete(document.getElementById("to-city"), cities);
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    let today = new Date().toISOString().split("T")[0];
+    document.getElementById("flight-date").setAttribute("min", today);
 });

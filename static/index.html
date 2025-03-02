@@ -10,64 +10,70 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css">
 </head>
-    <style>
-        
-    </style>
-</head>
+    
 
 <form action="" method="">
     <div class="header">
-        <h1>
-            Welcome To Team S Airline :
-        </h1>
+        <h1>Welcome To Team S Airline :</h1>
     </div>
     <div class="search-container">
         <div class="tabs">
-            <div class="active">
-                Flights
-            </div>
+            <div class="active">Flights</div>
         </div>
-        <form>
         <div>
             <input checked="" id="round-trip" name="trip" type="radio" />
-            <label for="round-trip">
-                Round Trip
-            </label>
+            <label for="round-trip">Round Trip</label>
             <input id="one-way" name="trip" type="radio" />
-            <label for="one-way">
-                One Way
-            </label>
+            <label for="one-way">One Way</label>
             <input id="multi-city" name="trip" type="radio" />
-            <label for="multi-city">
-                Multi-City
-            </label>
+            <label for="multi-city">Multi-City</label>
         </div>
         <div>
             <div style="position: relative;">
                 <input id="from-city" placeholder="Enter Here" type="text" value="" />
-                <div class="autocomplete-suggestions" id="from-city-suggestions">
-                </div>
+                <div class="autocomplete-suggestions" id="from-city-suggestions"></div>
             </div>
             <div style="position: relative;">
                 <input id="to-city" placeholder="Enter Here" type="text" value="" />
-                <div class="autocomplete-suggestions" id="to-city-suggestions">
-                </div>
+                <div class="autocomplete-suggestions" id="to-city-suggestions"></div>
             </div>
-            <input type="date" value="2025-01-22" />
-            <input type="number" value="1" />
-            <button>
-                Search Flights
-            </button>
+            <input id="flight-date" type="date" value="" />
+            <br>
+            <button>Search Flights</button>
         </div>
     </div>
+    </form>
+
+    
+    <form action="" method="">
     <div class="action-buttons">
-        <button class="edit-button">
-            Edit Details
-        </button>
-        <button class="cancel-button">
-            Cancel Ticket
-        </button>
+        <button class="cancel-button" id="check-ticket-status">Check Ticket Status</button>
     </div>
+    <!-- New section for ticket status input and display -->
+    <div id="ticket-status-section" style="display: none;">
+        <div class="search-ticket">
+            <input type="text" id="ticket-id" placeholder="Enter Ticket ID" />
+            <button id="submit-ticket-id">Submit</button>
+        </div>
+        <div id="ticket-details" style="display: none;">
+            <div class="deal">
+                <div class="info">
+                    <h3>Ticket Details</h3>
+                    <p><strong>Ticket ID:</strong> <span id="ticket-id-display">123456</span></p>
+                    <p><strong>Passenger Name:</strong> John Doe</p>
+                    <p><strong>Flight:</strong> DEL → SFO</p>
+                    <p><strong>Date:</strong> 2023-12-25</p>
+                    <p><strong>Status:</strong> Confirmed</p>
+                    <button id="cancel-ticket" class="cancel-button">Cancel Ticket</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+   
+</script>
 </form>
     <div class="deals-container">
         <h2>
@@ -80,7 +86,7 @@
         <div class="deals">
             <div class="deal">
                 <img alt="Golden Gate Bridge in San Francisco" height="200"
-                    src="https://storage.googleapis.com/a1aa/image/Jl2V5Rb-mX6d1Mum18V2pWE0k3aRFVuj6Oj1UtaC7J8.jpg"
+                    src="./assets/card1.jpg"
                     width="300" />
                 <div class="info">
                     <h3>
@@ -217,7 +223,7 @@
             © 2023 Flight Booking. All rights reserved.
         </p>
     </div>
-   <script src="script.js"></script>
+   <script src="script.js"></script> 
 </body>
 
-</html>
+</html>    
