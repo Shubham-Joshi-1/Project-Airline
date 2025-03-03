@@ -5,145 +5,225 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Airline Booking System</title>
 
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+    
 
-    <header class="header">
-        <h1>Welcome To Team S Airline</h1>
-    </header>
-
-    <form id="searchForm" action="/available_flights" method="post">
-        <div class="search-container">
-            <div class="tabs">
-                <div class="active">Flights</div>
-            </div>
-
-            <!-- Trip Type Selection -->
-            <div class="trip-options">
-                <input id="round-tripType" name="tripType" type="radio" value="round-trip" checked />
-                <label for="round-tripType">Round Trip</label>
-
-                <input id="one-way" name="tripType" type="radio" value="one-way" />
-                <label for="one-way">One Way</label>
-
-                <input id="multi-city" name="tripType" type="radio" value="multi-city" />
-                <label for="multi-city">Multi-City</label>
-            </div>
-
-            <!-- Flight Search Fields -->
-            <div class="search-fields">
-                <div class="input-group">
-                    <label for="from-city">From</label>
-                    <input id="departure" name="departure" placeholder="Enter departure city" type="text" required />
-                    <div class="autocomplete-suggestions" id="from-city-suggestions"></div>
-                </div>
-
-                <div class="input-group">
-                    <label for="to-city">To</label>
-                    <input id="arrival" name="arrival" placeholder="Enter destination city" type="text" required />
-                    <div class="autocomplete-suggestions" id="to-city-suggestions"></div>
-                </div>
-
-                <div class="input-group">
-                    <label for="departureDate">Departure Date</label>
-                    <input type="date" id="departureDate" name="departureDate" required />
-                </div>
-
-                <div class="input-group">
-                    <label for="passengers">Passengers</label>
-                    <input type="number" id="passengers" name="passengers" min="1" value="1" required />
-                </div>
-            </div>
-
-            <button type="submit" class="search-button">Search Flights</button>
+<form action="" method="">
+    <div class="header">
+        <h1>Welcome To Team S Airline :</h1>
+    </div>
+    <div class="search-container">
+        <div class="tabs">
+            <div class="active">Flights</div>
         </div>
+        <div>
+            <input checked="" id="round-trip" name="trip" type="radio" />
+            <label for="round-trip">Round Trip</label>
+            <input id="one-way" name="trip" type="radio" />
+            <label for="one-way">One Way</label>
+            <input id="multi-city" name="trip" type="radio" />
+            <label for="multi-city">Multi-City</label>
+        </div>
+        <div>
+            <div style="position: relative;">
+                <input id="from-city" placeholder="Enter Here" type="text" value="" />
+                <div class="autocomplete-suggestions" id="from-city-suggestions"></div>
+            </div>
+            <div style="position: relative;">
+                <input id="to-city" placeholder="Enter Here" type="text" value="" />
+                <div class="autocomplete-suggestions" id="to-city-suggestions"></div>
+            </div>
+            <input id="flight-date" type="date" value="" />
+            <br>
+            <button>Search Flights</button>
+        </div>
+    </div>
     </form>
 
-    <!-- Action Buttons (Outside the Form) -->
+    
+    <form action="" method="">
     <div class="action-buttons">
-        <button class="edit-button">Edit Details</button>
-        <button class="cancel-button">Cancel Ticket</button>
+        <button class="cancel-button" id="check-ticket-status">Check Ticket Status</button>
     </div>
-
-    <!-- Deals Section -->
-    <section class="deals-container">
-        <h2>Found these <span style="color: green;">low</span> fare deals for your next trip</h2>
-        <div class="deals">
+    <!-- New section for ticket status input and display -->
+    <div id="ticket-status-section" style="display: none;">
+        <div class="search-ticket">
+            <input type="text" id="ticket-id" placeholder="Enter Ticket ID" />
+            <button id="submit-ticket-id">Submit</button>
+        </div>
+        <div id="ticket-details" style="display: none;">
             <div class="deal">
-                <img alt="Golden Gate Bridge in San Francisco" height="200" 
-                    src="https://storage.googleapis.com/a1aa/image/Jl2V5Rb-mX6d1Mum18V2pWE0k3aRFVuj6Oj1UtaC7J8.jpg" width="300" />
                 <div class="info">
-                    <h3>San Francisco</h3>
-                    <p>May 31 – Jul 27</p>
-                    <p>DEL – SFO</p>
-                    <p class="price">$703.99* <span>Round Trip</span></p>
-                </div>
-            </div>
-
-            <div class="deal">
-                <img alt="Vancouver cityscape" height="200" 
-                    src="https://storage.googleapis.com/a1aa/image/zNOowLRXVlco9K9Rtbm10S4qD6BhX_NSp7WiHleOhC8.jpg" width="300" />
-                <div class="info">
-                    <h3>Vancouver</h3>
-                    <p>Jul 16 – Sep 15</p>
-                    <p>DEL – YVR</p>
-                    <p class="price">$840.99* <span>Round Trip</span></p>
-                </div>
-            </div>
-
-            <div class="deal">
-                <img alt="Toronto cityscape" height="200" 
-                    src="https://storage.googleapis.com/a1aa/image/5Viw0RvGwKG5FDYbQlMonaA70Sp4RSg9_VP3I_mIWOQ.jpg" width="300" />
-                <div class="info">
-                    <h3>Toronto</h3>
-                    <p>May 12 – Aug 03</p>
-                    <p>DEL – YTO</p>
-                    <p class="price">$881.65* <span>Round Trip</span></p>
-                </div>
-            </div>
-
-            <div class="deal">
-                <img alt="New York City skyline" height="200" 
-                    src="https://storage.googleapis.com/a1aa/image/irDOyXJuz5XftUtOA-a60792M3hqvuCEtRZ5eAAWwdQ.jpg" width="300" />
-                <div class="info">
-                    <h3>New York</h3>
-                    <p>Jun 01 – Aug 15</p>
-                    <p>DEL – JFK</p>
-                    <p class="price">$950.50* <span>Round Trip</span></p>
-                </div>
-            </div>
-
-            <div class="deal">
-                <img alt="London cityscape" height="200" 
-                    src="https://storage.googleapis.com/a1aa/image/5o0ooTk6SnkQ05UfaeoStQ3YY-dhDBQ3iH6yk9nB1vI.jpg" width="300" />
-                <div class="info">
-                    <h3>London</h3>
-                    <p>Jul 10 – Sep 20</p>
-                    <p>DEL – LHR</p>
-                    <p class="price">$1100.75* <span>Round Trip</span></p>
-                </div>
-            </div>
-
-            <div class="deal">
-                <img alt="Sydney Opera House" height="200" 
-                    src="https://storage.googleapis.com/a1aa/image/EYCBJ1qNOzkC8oB1dCqJ3N13hj0RVTtS5zSQgXO1Fgc.jpg" width="300" />
-                <div class="info">
-                    <h3>Sydney</h3>
-                    <p>Aug 05 – Oct 10</p>
-                    <p>DEL – SYD</p>
-                    <p class="price">$1200.99* <span>Round Trip</span></p>
+                    <h3>Ticket Details</h3>
+                    <p><strong>Ticket ID:</strong> <span id="ticket-id-display">123456</span></p>
+                    <p><strong>Passenger Name:</strong> John Doe</p>
+                    <p><strong>Flight:</strong> DEL → SFO</p>
+                    <p><strong>Date:</strong> 2023-12-25</p>
+                    <p><strong>Status:</strong> Confirmed</p>
+                    <button id="cancel-ticket" class="cancel-button">Cancel Ticket</button>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</form>
 
-    <footer class="footer">
-        <p>© 2025 Flight Booking. All rights reserved.</p>
-    </footer>
-
-    <script src="script.js"></script>
+<script>
+   
+</script>
+</form>
+    <div class="deals-container">
+        <h2>
+            Found these
+            <span style="color: green;">
+                low
+            </span>
+            fare deals for your next trip
+        </h2>
+        <div class="deals">
+            <div class="deal">
+                <img alt="Golden Gate Bridge in San Francisco" height="200"
+                    src="./assets/card1.jpg"
+                    width="300" />
+                <div class="info">
+                    <h3>
+                        San Francisco
+                    </h3>
+                    <p>
+                        May 31 – Jul 27
+                    </p>
+                    <p>
+                        DEL – SFO
+                    </p>
+                    <p class="price">
+                        $703.99*
+                        <span>
+                            Round Trip
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <div class="deal">
+                <img alt="Vancouver cityscape" height="200"
+                    src="https://storage.googleapis.com/a1aa/image/zNOowLRXVlco9K9Rtbm10S4qD6BhX_NSp7WiHleOhC8.jpg"
+                    width="300" />
+                <div class="info">
+                    <h3>
+                        Vancouver
+                    </h3>
+                    <p>
+                        Jul 16 – Sep 15
+                    </p>
+                    <p>
+                        DEL – YVR
+                    </p>
+                    <p class="price">
+                        $840.99*
+                        <span>
+                            Round Trip
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <div class="deal">
+                <img alt="Toronto cityscape" height="200"
+                    src="https://storage.googleapis.com/a1aa/image/5Viw0RvGwKG5FDYbQlMonaA70Sp4RSg9_VP3I_mIWOQ.jpg"
+                    width="300" />
+                <div class="info">
+                    <h3>
+                        Toronto
+                    </h3>
+                    <p>
+                        May 12 – Aug 03
+                    </p>
+                    <p>
+                        DEL – YTO
+                    </p>
+                    <p class="price">
+                        $881.65*
+                        <span>
+                            Round Trip
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <div class="deal">
+                <img alt="New York City skyline" height="200"
+                    src="https://storage.googleapis.com/a1aa/image/irDOyXJuz5XftUtOA-a60792M3hqvuCEtRZ5eAAWwdQ.jpg"
+                    width="300" />
+                <div class="info">
+                    <h3>
+                        New York
+                    </h3>
+                    <p>
+                        Jun 01 – Aug 15
+                    </p>
+                    <p>
+                        DEL – JFK
+                    </p>
+                    <p class="price">
+                        $950.50*
+                        <span>
+                            Round Trip
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <div class="deal">
+                <img alt="London cityscape" height="200"
+                    src="https://storage.googleapis.com/a1aa/image/5o0ooTk6SnkQ05UfaeoStQ3YY-dhDBQ3iH6yk9nB1vI.jpg"
+                    width="300" />
+                <div class="info">
+                    <h3>
+                        London
+                    </h3>
+                    <p>
+                        Jul 10 – Sep 20
+                    </p>
+                    <p>
+                        DEL – LHR
+                    </p>
+                    <p class="price">
+                        $1100.75*
+                        <span>
+                            Round Trip
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <div class="deal">
+                <img alt="Sydney Opera House" height="200"
+                    src="https://storage.googleapis.com/a1aa/image/EYCBJ1qNOzkC8oB1dCqJ3N13hj0RVTtS5zSQgXO1Fgc.jpg"
+                    width="300" />
+                <div class="info">
+                    <h3>
+                        Sydney
+                    </h3>
+                    <p>
+                        Aug 05 – Oct 10
+                    </p>
+                    <p>
+                        DEL – SYD
+                    </p>
+                    <p class="price">
+                        $1200.99*
+                        <span>
+                            Round Trip
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <p>
+            © 2023 Flight Booking. All rights reserved.
+        </p>
+    </div>
+   <script src="script.js"></script> 
 </body>
-</html>
+
+</html>    

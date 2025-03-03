@@ -19,6 +19,34 @@ body {
     margin: -40px 20px 20px 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-image: url('./assets/bg2.jpg'); /* Replace with your image URL */
+    background-size: cover;
+    background-position: center;
+
+}
+
+.search-ticket{
+    background-color: white;
+    padding: 20px;
+    margin: -40px 20px 20px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    
+}
+
+.search-ticket input,
+.search-ticket button{
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.search-ticket button {
+    background-color: #ff6600;
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 160px;
 }
 
 .search-container input,
@@ -35,15 +63,20 @@ body {
     color: white;
     border: none;
     cursor: pointer;
+    width: 160px;
+}
+
+#flight-date{
+    width: 160px;
 }
 
 .search-container button:hover {
     background-color: #e65c00;
+    
 }
 
 .tabs {
     display: flex;
-    justify-content: space-around;
     margin-bottom: 20px;
 }
 

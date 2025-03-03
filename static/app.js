@@ -8,31 +8,14 @@ const { spawn } = require("child_process");
 const { Console } = require("console");
 const session = require("express-session");
 const { v4: uuidv4 } = require("uuid"); 
+const { compileFunction } = require("vm");
 mongoose.connect("mongodb+srv://Ansh:airline123@cluster0.zycn0.mongodb.net/");
 const db = mongoose.connection;
+
 
 db.on("error", () => console.log("Error connecting to the database"));
 db.once("open", () => console.log("MongoDb connected"));
 
-
-
-// const TicketsSchema = new mongoose.Schema({
-//   ticketID: String,
-//   sessionId: String,
-//   first_name: String,
-//   last_name: String,
-//   gender: String,
-//   email: String,
-//   seat_class: String,
-//   member_type: String,
-//   priority: Number,
-//   departure: String, 
-//   arrival: String, 
-//   departureDate: Date,
-//   tripType: String,
-//   row:Number,
-//   col:Number
-// });
 
 const seat_layout_schema=new mongoose.Schema({ 
   row: Number,
@@ -40,33 +23,39 @@ const seat_layout_schema=new mongoose.Schema({
   member_type: String,  
   ticket_id: String
   });
+const Seat = mongoose.model('Seat', seat_layout_schema, 'SeatAlloted');
+
 
 const partial_ticket_schema=new mongoose.Schema({
-  from: String,
-  to: String,
-  depart_date: Date,
-  f_name: String,
-  l_name: String,
+  departure: String,
+  arrival: String,
+  departureDate: Date,
+  first_name: String,
+  last_name: String,
   email: String,
   gender: String,
   dob: Date,
-  session_id: String,
-  trip_type:String,
+  sessionId: String,
+  tripType:String,
   flight_name: String,
   flight_no: Number,
-  flight_price:Number    
+  flight_price:Number,
+  row:Number,
+  col:Number    
 });
+const pTicket = mongoose.model('pTicket', partial_ticket_schema, 'TemporaryTicket');
+
 const final_ticket_schema=new mongoose.Schema({
-  from: String,
-  to: String,
+  departure: String,
+  arrival: String,
   depart_date: Date,
-  f_name: String,
-  l_name: String,
+  first_name: String,
+  last_name: String,
   email: String,
   gender: String,
   dob: Date,
   session_id: String,
-  trip_type:String,
+  tripType:String,
   flight_name: String,
   flight_no: Number,
   flight_price:Number,
@@ -74,15 +63,22 @@ const final_ticket_schema=new mongoose.Schema({
   ticket_id:String,
   priority:Number
     });
+const fTicket = mongoose.model('fTicket', final_ticket_schema, 'Tickets');
+
+
+
 const admin_authentication_schema=new mongoose.Schema({
-  username: String,
+  email: String,
   password: String
 
     });
+const Admin = mongoose.model('Admin', admin_authentication_schema, 'admin_authentication');
 const priority_schema=new mongoose.Schema({
   priority_vip_count: Number,
   priority_regular_count: Number
     });
+const Priority = mongoose.model('Priority', priority_schema, 'PriorityCount');
+  
   
                                               
   
@@ -111,15 +107,19 @@ app.use((req, res, next) => {
   }
   next();
 });
+function checkAdminlogin(req, res, next){
+  if(req.session.adminLoggedIn){
+    next();
+  }else{
+    res.redirect("/admin_login")
+  }
 
+}
 app.post("/available_flights", async (req, res) => {
-  const Tickets = mongoose.model('Tickets' , TicketsSchema);
-
-  const { tripType, departure, arrival, departureDate } = req.body; 
   const sessionId = req.session.sessionId;
+  const {tripType,departure,arrival,departureDate} = req.body;
   
-
-  const newTicket = new Tickets({
+  const newTicket = new pTicket({
       sessionId,
       tripType,
       departure,
@@ -136,6 +136,7 @@ app.post("/available_flights", async (req, res) => {
     }
       res.json([
           {tripType, departure, arrival, departureDate ,price:getRandomNumber(5000, 10000)},
+          {tripType, departure, arrival, departureDate ,price:getRandomNumber(5000, 10000)}
           
       ]);
   } catch (err) {
@@ -146,16 +147,15 @@ app.post("/available_flights", async (req, res) => {
 
 
 app.post("/user_info", async (req, res) => {
-    const { email,first_name, last_name, gender} = req.body; 
+    const { email,first_name, last_name, gender,dob} = req.body; 
     const sessionId = req.session.sessionId;
 
-    const Tickets = mongoose.model('Tickets', TicketsSchema);
 
     try {
-      let ticket = await Tickets.findOneAndUpdate(
+      let ticket = await pTicket.findOneAndUpdate(
         { sessionId }, 
         { 
-            $set: { email, first_name, last_name, gender} 
+            $set: { email, first_name, last_name, gender,dob} 
         }, 
         { new: true } 
     );
@@ -174,19 +174,19 @@ function parseSeat(seatString) {
 
 
 app.post("/seat_layout", async (req, res) => {
-  const { seat,member_type,seat_class } = req.body;
+  const { seat} = req.body;
   console.log(seat);
   const sessionId = req.session.sessionId;
-  const Tickets = mongoose.model("Tickets", TicketsSchema);
 
   const { row, col } = parseSeat(seat);
 
   try {
-    await Tickets.findOneAndUpdate(
+    await pTicket.findOneAndUpdate(
       { sessionId },
       { $set: { row:row ,col:col } },
       { new: true }
     );
+    res.redirect("/")
   } catch (err) {
     console.error(err);
     return res.status(500).send("Error inserting or updating record");
@@ -196,19 +196,21 @@ app.post("/seat_layout", async (req, res) => {
 });
 
 app.post('/admin_login', async (req, res) => {
+  
   try {
       const { email, password } = req.body;
       const user = await Admin.findOne({ email });
+
 
       if (!user) {
           return res.status(500).json({ message: "Admin not found" });
           
       }
 
-      const isMatch = await compare(password, user.password);
 
-      if (isMatch) {
-         return res.redirect("admin.html");
+      if (password==user.password){
+        req.session.adminLoggedIn = true;
+         return res.redirect("/admin");
       } else {
         return res.status(500).json({ message: "Password didn't match" });
       }
@@ -224,6 +226,17 @@ app.use((req, res, next) => {
   console.log(`${req.method} request to ${req.url}`);
   next();
 });
+function generateTicketID(seatClass, row, col, priority) {
+  let ticketID = seatClass.charAt(0); 
+  
+  if (priority === "VIP") {
+      ticketID += `VIP_R${row}C${col}`;
+  } else {
+      ticketID += `_R${row}C${col}`;
+  }
+
+  return ticketID;
+}
 
 app.get("/", (req, res) => {
     res.sendFile("index.html", { root: staticPath });
@@ -238,7 +251,7 @@ app.get("/", (req, res) => {
   app.get("/user_info", (req, res) => {
     res.sendFile("/user_info.html", { root: staticPath });
   });
-  app.get("/admin", (req, res) => {
+  app.get("/admin",checkAdminlogin ,(req, res) => {
     res.sendFile("/admin.html", { root: staticPath });
   });
   app.get("/admin_login", (req, res) => {

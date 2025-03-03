@@ -4,23 +4,25 @@
     <title>Traveler Information</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
-            margin: 0;
-            padding: 0;
+            background-image: url('./assets/user.jpg'); 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
         .navbar {
-            background-color: #ff4b2b;
+            border: 2px red solid;
             color: white;
             padding: 15px;
             text-align: center;
             font-size: 24px;
             font-weight: bold;
+            color: black;
         }
         .container {
             max-width: 800px;
-            margin: 20px auto;
-            background-color: #fff;
+            margin: 20px auto 20px 50px; 
+            background-color: rgba(255, 186, 186, 0.444);
+            backdrop-filter: blur(0.9);
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -111,7 +113,6 @@
         Traveler Information
     </div>
     <div class="container">
-    <form action="/user_info" method="post">
         <div class="form-group">
             <label for="email">Email Address*</label>
             <input type="email" id="email" name="email" required>
@@ -120,15 +121,14 @@
         <div class="form-group">
             <label>Traveler Info :</label>
             <div class="form-group name-group">
-                <input type="text" id="first-name" name="first_name" placeholder="First Name*" required>
-                <input type="text" id="last-name" name="last_name" placeholder="Last Name*" required>
+                <input type="text" id="first-name" name="first-name" placeholder="First Name*" required>
+                <input type="text" id="last-name" name="last-name" placeholder="Last Name*" required>
             </div>
         </div>  
 
         <div class="form-group">
             <label>Date of Birth*</label>
             <input type="date" id="dob" name="dob" required>
-
         </div>
 
         <div class="form-group">
@@ -142,30 +142,21 @@
         <div class="form-group">
             <label>Seat Class*</label>
             <div class="seat-class-group">
-                <label><input type="radio" name="seat_class" value="economy" required> Economy</label>
-                <label><input type="radio" name="seat_class" value="business" required> Business</label>
+                <label><input type="radio" name="seat-class" value="economy" required> Economy</label>
+                <label><input type="radio" name="seat-class" value="business" required> Business</label>
             </div>
         </div>
 
         <div class="form-group">
             <label>Member Type*</label>
             <div class="member-type-group">
-                <label><input type="radio" name="member_type" value="vip" required> VIP</label>
-                <label><input type="radio" name="member_type" value="regular" required> Regular</label>
+                <label><input type="radio" name="member-type" value="vip" required> VIP</label>
+                <label><input type="radio" name="member-type" value="regular" required> Regular</label>
             </div>
         </div>
-
-        <div class="form-group">
-            <span class="toggle-link">Frequent Flyer and Optional Requests</span>
-        </div>
-        <div class="form-group">
-            <button class="toggle-link">Add / Edit Traveler(s)</button>
-        </div>
         <div class="button-group">
-            <button type="submit">Continue to Seats</button>
+            <button>Continue to Seats</button>
         </div>
-    </form>
     </div>
-    
 </body>
 </html>
