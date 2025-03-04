@@ -67,6 +67,11 @@ const final_ticket_schema=new mongoose.Schema({
     });
 const fTicket = mongoose.model('fTicket', final_ticket_schema, 'Tickets');
 
+const seat_alloted_schema=new mongoose.schema({
+  p_id:String,
+  status:String
+    )};
+
 
 
 const admin_authentication_schema=new mongoose.Schema({
