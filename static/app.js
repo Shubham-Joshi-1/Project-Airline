@@ -21,7 +21,9 @@ const seat_layout_schema=new mongoose.Schema({
   row: Number,
   cols:Number,
   member_type: String,  
-  ticket_id: String
+  ticket_id: String,
+  p_id:String,
+  status:String
   });
 const Seat = mongoose.model('Seat', seat_layout_schema, 'SeatAlloted');
 
@@ -115,6 +117,17 @@ function checkAdminlogin(req, res, next){
   }
 
 }
+function generateTicketID(seatClass, row, col, priority) {
+  let ticketID = seatClass.charAt(0); 
+  
+  if (priority === "VIP") {
+      ticketID += `VIP_R${row}C${col}`;
+  } else {
+      ticketID += `_R${row}C${col}`;
+  }
+
+  return ticketID;
+}
 app.post("/available_flights", async (req, res) => {
   const sessionId = req.session.sessionId;
   const {tripType,departure,arrival,departureDate} = req.body;
@@ -159,6 +172,8 @@ app.post("/user_info", async (req, res) => {
         }, 
         { new: true } 
     );
+    await ticket.save();
+    console.log("Record inserted");
 
     res.redirect("/seat_layout");
 
@@ -181,6 +196,14 @@ app.post("/seat_layout", async (req, res) => {
   const { row, col } = parseSeat(seat);
 
   try {
+    const seat = await Seat.findOne(p_id);
+    if (seat && seat.status === "available") {
+      seat.status = "booked";
+      await seat.save();
+      res.json({ success: true, message: "Seat booked!" });
+    } else {
+      res.status(400).json({ success: false, message: "Seat already booked" });
+    }
     await pTicket.findOneAndUpdate(
       { sessionId },
       { $set: { row:row ,col:col } },
@@ -226,17 +249,7 @@ app.use((req, res, next) => {
   console.log(`${req.method} request to ${req.url}`);
   next();
 });
-function generateTicketID(seatClass, row, col, priority) {
-  let ticketID = seatClass.charAt(0); 
-  
-  if (priority === "VIP") {
-      ticketID += `VIP_R${row}C${col}`;
-  } else {
-      ticketID += `_R${row}C${col}`;
-  }
 
-  return ticketID;
-}
 
 app.get("/", (req, res) => {
     res.sendFile("index.html", { root: staticPath });
@@ -256,6 +269,36 @@ app.get("/", (req, res) => {
   });
   app.get("/admin_login", (req, res) => {
     res.sendFile("/admin_login.html", { root: staticPath });
+  });
+  app.get("/seats", async (req, res) => {
+    try {
+        const seats = await Seat.find();
+        
+        // Organizing seats into rows
+        const seatGrid = [];
+        seats.forEach(seat => {
+            if (!seatGrid[seat.row]) {
+                seatGrid[seat.row] = [];
+            }
+            seatGrid[seat.row].push({
+                id: `${seat.row}-${seat.cols}`,
+                row: seat.row,
+                col: seat.cols,
+                status: seat.ticket_id ? "booked" : "available"
+            });
+        });
+
+        res.json(seatGrid);
+    } catch (err) {
+        console.error("Error fetching seats:", err);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+  
+  // API to book a seat
+  app.post("/book", async (req, res) => {
+     
   });
 
 

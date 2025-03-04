@@ -198,5 +198,50 @@
         <div class="selected"><span></span> Selected</div>
         <div class="occupied"><span></span> Occupied</div>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+    const seatContainer = document.getElementById("seat-container");
+
+    // Fetch seat data every 3 seconds
+    async function loadSeats() {
+        const res = await fetch("http://localhost:5000/seats");
+        const seats = await res.json();
+
+        seatContainer.innerHTML = ""; // Clear previous data
+
+        seats.forEach((seat) => {
+            const seatBtn = document.createElement("button");
+            seatBtn.innerText = seat._id;
+            seatBtn.classList.add(seat.status === "booked" ? "booked" : "available");
+
+            if (seat.status === "available") {
+                seatBtn.addEventListener("click", () => bookSeat(seat._id));
+            }
+
+            seatContainer.appendChild(seatBtn);
+        });
+    }
+
+    // Book a seat
+    async function bookSeat(seatId) {
+        const res = await fetch("http://localhost:3002/book", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ seatId }),
+        });
+
+        const data = await res.json();
+        if (data.success) {
+            loadSeats(); // Refresh seat availability
+        } else {
+            alert(data.message);
+        }
+    }
+
+    loadSeats(); // Initial load
+    setInterval(loadSeats, 3000); // Poll server every 3 seconds
+});
+
+    </script>
 </body>
 </html>

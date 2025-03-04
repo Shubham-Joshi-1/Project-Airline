@@ -12,7 +12,7 @@
 </head>
     
 
-<form action="" method="">
+<form action="/available_flights" method="POST" id="searchForm">
     <div class="header">
         <h1>Welcome To Team S Airline :</h1>
     </div>
@@ -30,22 +30,22 @@
         </div>
         <div>
             <div style="position: relative;">
-                <input id="from-city" placeholder="Enter Here" type="text" value="" />
+                <input id="from-city" placeholder="Enter Here" type="text" value="" required />
                 <div class="autocomplete-suggestions" id="from-city-suggestions"></div>
             </div>
             <div style="position: relative;">
-                <input id="to-city" placeholder="Enter Here" type="text" value="" />
+                <input id="to-city" placeholder="Enter Here" type="text" value=""  required/>
                 <div class="autocomplete-suggestions" id="to-city-suggestions"></div>
             </div>
-            <input id="flight-date" type="date" value="" />
+            <input id="flight-date" type="date" value="" required/>
             <br>
-            <button>Search Flights</button>
+            <button type="submit">Search Flights</button>
         </div>
     </div>
     </form>
 
     
-    <form action="" method="">
+    <!-- <form action="" method=""> -->
     <div class="action-buttons">
         <button class="cancel-button" id="check-ticket-status">Check Ticket Status</button>
     </div>
@@ -69,12 +69,11 @@
             </div>
         </div>
     </div>
-</form>
+<!-- </form> -->
 
 <script>
    
 </script>
-</form>
     <div class="deals-container">
         <h2>
             Found these
@@ -220,7 +219,7 @@
     </div>
     <div class="footer">
         <p>
-            © 2023 Flight Booking. All rights reserved.
+            © 2023 Flight Booking. All rights reserved to TEAM S.
         </p>
     </div>
    <script src="script.js"></script> 
