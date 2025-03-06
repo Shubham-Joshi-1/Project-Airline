@@ -152,3 +152,35 @@ document.addEventListener("DOMContentLoaded", function () {
     let today = new Date().toISOString().split("T")[0];
     document.getElementById("flight-date").setAttribute("min", today);
 });
+
+
+
+
+
+
+// function for invalid input in city and to prevent the same city input... 
+
+document.addEventListener("DOMContentLoaded", function () {
+    const fromInput = document.getElementById("from-city");
+    const toInput = document.getElementById("to-city");
+    const submitButton = document.querySelector("button");
+
+    submitButton.addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent form submission
+
+        const fromCity = fromInput.value.trim();
+        const toCity = toInput.value.trim();
+
+        if (!cities.includes(fromCity) || !cities.includes(toCity)) {
+            alert("Please enter a valid city.");
+            return;
+        }
+
+        if (fromCity.toLowerCase() === toCity.toLowerCase()) {
+            alert("You cannot select the same city for both 'From' and 'To' fields!");
+            return;
+        }
+
+        alert("Searching flights...");
+    });
+});
