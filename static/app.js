@@ -17,14 +17,14 @@ db.on("error", () => console.log("Error connecting to the database"));
 db.once("open", () => console.log("MongoDb connected"));
 
 
-const seat_layout_schema=new mongoose.Schema({ 
+const seat_layout_schema = new mongoose.Schema({ 
   row: Number,
-  cols:Number,
+  col: Number, 
   member_type: String,  
   ticket_id: String,
-  p_id:String,
-  status:String
-  });
+  p_id: String, 
+  status: String
+});
 const Seat = mongoose.model('Seat', seat_layout_schema, 'SeatAlloted');
 
 
@@ -67,10 +67,6 @@ const final_ticket_schema=new mongoose.Schema({
     });
 const fTicket = mongoose.model('fTicket', final_ticket_schema, 'Tickets');
 
-const seat_alloted_schema=new mongoose.schema({
-  p_id:String,
-  status:String
-    )};
 
 
 
@@ -193,35 +189,22 @@ function parseSeat(seatString) {
 }
 
 
-app.post("/seat_layout", async (req, res) => {
-  const { seat} = req.body;
-  console.log(seat);
-  const sessionId = req.session.sessionId;
 
-  const { row, col } = parseSeat(seat);
-
-  try {
-    const seat = await Seat.findOne(p_id);
-    if (seat && seat.status === "available") {
-      seat.status = "booked";
-      await seat.save();
-      res.json({ success: true, message: "Seat booked!" });
-    } else {
-      res.status(400).json({ success: false, message: "Seat already booked" });
-    }
-    await pTicket.findOneAndUpdate(
-      { sessionId },
-      { $set: { row:row ,col:col } },
-      { new: true }
+  app.post("/seat_layout", async (req, res) => {
+    const { seat } = req.body; // Expects seat ID like "1-1"
+    try {
+      const result = await Seat.updateOne(
+        { p_id: seat },
+        { $set: { status: "booked" } }
     );
-    res.redirect("/")
-  } catch (err) {
-    console.error(err);
-    return res.status(500).send("Error inserting or updating record");
-  }
-
-  
-});
+    if(!seat){
+      return res.status(500).json({message:"pls select seat"});
+    }  
+    res.redirect("/");
+    } catch (err) {
+      return res.status(500).json({ success: false });
+    }
+  });
 
 app.post('/admin_login', async (req, res) => {
   
@@ -277,33 +260,11 @@ app.get("/", (req, res) => {
   });
   app.get("/seats", async (req, res) => {
     try {
-        const seats = await Seat.find();
-        
-        // Organizing seats into rows
-        const seatGrid = [];
-        seats.forEach(seat => {
-            if (!seatGrid[seat.row]) {
-                seatGrid[seat.row] = [];
-            }
-            seatGrid[seat.row].push({
-                id: `${seat.row}-${seat.cols}`,
-                row: seat.row,
-                col: seat.cols,
-                status: seat.ticket_id ? "booked" : "available"
-            });
-        });
-
-        res.json(seatGrid);
+      const seats = await Seat.find();
+      res.json(seats);
     } catch (err) {
-        console.error("Error fetching seats:", err);
-        res.status(500).json({ error: "Server error" });
+      res.status(500).json({ message: "Error fetching seats" });
     }
-});
-
-  
-  // API to book a seat
-  app.post("/book", async (req, res) => {
-     
   });
 
 
