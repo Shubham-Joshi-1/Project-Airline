@@ -57,7 +57,8 @@
         
         button {
             padding: 12px 24px;
-            margin: 10px;
+            margin: 12px;
+            margin-left: 48%;
             border-radius: 10px;
             border: none;
             cursor: pointer;
@@ -83,30 +84,11 @@
             box-sizing: border-box;
         }
         
-        .business {
-            background: linear-gradient(to right, #4a90e2, #357abd);
-            color: white;
-            border: none;
-            margin: 20px 0;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .economy {
-            background: linear-gradient(to right, #f5f5f5, #e0e0e0);
-            color: black;
-            border: none;
-            margin: 20px 0;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
         .vip {
-            background: linear-gradient(to right, #ffd700, #ffa500) !important;
-            color: black !important;
-            border: 2px solid #ffd700 !important;
+            background: linear-gradient(to right, #ffd700, #ffa500);
+            color: black;
+            border: 2px solid #ffd700;
+            position: relative;
         }
 
         .vip-badge {
@@ -120,15 +102,24 @@
             font-size: 0.8em;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
-        
+
+        .regular {
+            background: linear-gradient(to right, #f5f5f5, #e0e0e0);
+            color: black;
+            border: none;
+        }
+
         .ticket-container {
             position: relative;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 10px 0;
         }
         
         h2 {
             text-align: center;
             margin: 0 0 15px 0;
-            color: inherit;
             font-size: 1.5rem;
         }
         
@@ -149,151 +140,494 @@
         .ticket-label {
             font-weight: bold;
         }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-size: 18px;
+        }
+
+        .error-message {
+            color: red;
+            text-align: center;
+            padding: 15px;
+            background-color: rgba(255, 0, 0, 0.1);
+            border-radius: 5px;
+            margin: 10px auto;
+            width: 80%;
+        }
+
+        .refresh-btn {
+            background-color: #2196F3;
+        }
+
+        .status-bar {
+            background-color: rgba(0, 0, 0, 0.05);
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+            margin: 5px auto;
+            width: 90%;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="control-container">
+            <!-- Seating Class Filter -->
             <div class="radio-group">
                 <label class="radio-label">
-                    <input type="radio" name="ticketClass" value="all" checked>
+                    <input type="radio" name="seatingClass" value="all" checked>
                     All Classes
                 </label>
                 <label class="radio-label">
-                    <input type="radio" name="ticketClass" value="business">
-                    Business Class
+                    <input type="radio" name="seatingClass" value="business">
+                    Business
                 </label>
                 <label class="radio-label">
-                    <input type="radio" name="ticketClass" value="economy">
-                    Economy Class
+                    <input type="radio" name="seatingClass" value="economy">
+                    Economy
                 </label>
             </div>
-            <button onclick="confirmTickets()">CONFIRM</button>
+
+            <!-- Ticket Type Filter -->
+            <div class="radio-group">
+                <label class="radio-label">
+                    <input type="radio" name="ticketClass" value="all" checked>
+                    All Tickets
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="ticketClass" value="vip">
+                    VIP
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="ticketClass" value="regular">
+                    Regular
+                </label>
+            </div>
+           
+            <div class="status-bar" id="statusBar">
+                Last updated: <span id="lastUpdated">Never</span>
+                <button class="refresh-btn" id="refreshButton">Refresh Data</button>
+            </div>
         </div>
         
-        <div class="queue">
-            <!-- Tickets will be dynamically inserted here -->
+        <div class="queue" id="ticketQueue">
+            <div class="loading" id="loadingIndicator">Loading tickets...</div>
         </div>
+        
+        <button id="confirmButton" onclick="confirmTickets()">CONFIRM</button>
     </div>
-
+    <div class="ticket-actions">
+        <button id="confirmSelectedBtn" class="btn btn-success" onclick="confirmSelectedTickets()">
+          Confirm Selected Tickets
+        </button>
+        <button id="refreshBtn" class="btn btn-secondary" onclick="location.reload()">
+          Refresh List
+        </button>
+      </div>
+      
+      <table class="ticket-table">
+        <thead>
+          <tr>
+            <th><input type="checkbox" id="selectAllCheckbox" onclick="toggleAllCheckboxes(this.checked)"></th>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Class</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="ticketList">
+          <!-- Tickets will be inserted here dynamically -->
+          <!-- Example row:
+          <tr>
+            <td><input type="checkbox" name="ticketCheckbox" value="ticket-id-1"></td>
+            <td>TICKET001</td>
+            <td>John Doe</td>
+            <td>Economy</td>
+            <td>New York</td>
+            <td>London</td>
+            <td>2025-03-15</td>
+            <td>
+              <button onclick="confirmTicket('ticket-id-1')" class="btn btn-sm btn-primary">Confirm</button>
+              <button onclick="deleteTicket('ticket-id-1')" class="btn btn-sm btn-danger">Delete</button>
+            </td>
+          </tr>
+          -->
+        </tbody>
+      </table>
+    
     <script>
+        // API endpoint configurations
+        const API_ENDPOINT = '/api/tickets'; // Change this to your actual API endpoint
+        
+        // Keep track of current tickets
+        let currentTickets = [];
+        
+        // Function to create a ticket element
         function createTicket(ticketData) {
-            const container = document.querySelector(".queue");
-            if (!container) {
-                console.error("Container div with class 'queue' not found.");
-                return;
-            }
-            
             const ticketContainer = document.createElement("div");
             ticketContainer.classList.add("ticket-container");
-            
-            const newDiv = document.createElement("div");
-            newDiv.classList.add(ticketData.class.toLowerCase());
-            if (ticketData.isVip) {
-                newDiv.classList.add('vip');
-            }
-            newDiv.dataset.ticketClass = ticketData.class.toLowerCase();
-            
+
+            // Assign class based on priority
+            const ticketClass = ticketData.assignedPriority > 26 ? "vip" : "regular";
+            ticketContainer.classList.add(ticketClass);
+            ticketContainer.dataset.ticketClass = ticketClass;
+
             const heading = document.createElement("h2");
             heading.textContent = `${ticketData.class} Class Ticket`;
+
+            const seatingClass = ticketData.class.toLowerCase(); // e.g., "business" or "economy"
+            ticketContainer.dataset.class = seatingClass; 
             
-            if (ticketData.isVip) {
+            // Add VIP Badge if applicable
+            if (ticketClass === "vip") {
                 const vipBadge = document.createElement("div");
                 vipBadge.classList.add("vip-badge");
                 vipBadge.textContent = "VIP";
                 ticketContainer.appendChild(vipBadge);
             }
-            
+
             const ticketInfo = document.createElement("div");
             ticketInfo.classList.add("ticket-info");
-            
-            const infoHTML = `
+            ticketInfo.innerHTML = `
                 <div><span class="ticket-label">Ticket ID:</span> ${ticketData.id}</div>
                 <div><span class="ticket-label">Name:</span> ${ticketData.name}</div>
                 <div><span class="ticket-label">From:</span> ${ticketData.from}</div>
                 <div><span class="ticket-label">To:</span> ${ticketData.to}</div>
                 <div><span class="ticket-label">Date:</span> ${ticketData.date}</div>
-                <div><span class="ticket-label">Status:</span> ${ticketData.status}</div>
+                <div><span class="ticket-label">Priority:</span> ${ticketData.assignedPriority}</div>
             `;
-            
-            ticketInfo.innerHTML = infoHTML;
-            
-            newDiv.appendChild(heading);
-            newDiv.appendChild(ticketInfo);
-            ticketContainer.appendChild(newDiv);
-            container.appendChild(ticketContainer);
+
+            ticketContainer.appendChild(heading);
+            ticketContainer.appendChild(ticketInfo);
+            return ticketContainer;
         }
 
-        function filterTickets(ticketClass) {
-            const tickets = document.querySelectorAll('.ticket-container');
-            tickets.forEach(ticket => {
-                const ticketElement = ticket.querySelector('[data-ticket-class]');
-                if (ticketClass === 'all' || ticketElement.dataset.ticketClass === ticketClass) {
-                    ticket.style.display = 'block';
-                } else {
-                    ticket.style.display = 'none';
-                }
-            });
-        }
+        // Function to generate sorted tickets
+        function generateSortedTickets(ticketArray) {
+            const container = document.getElementById("ticketQueue");
+            if (!container) return;
 
-        function confirmTickets() {
-            // Add your confirmation logic here
-            console.log('Confirming tickets...');
-        }
+            // Clear loading indicator
+            container.innerHTML = ""; 
 
-        // Add radio button event listeners
-        document.querySelectorAll('input[name="ticketClass"]').forEach(radio => {
-            radio.addEventListener('change', (e) => {
-                filterTickets(e.target.value);
-            });
-        });
-
-        // Example usage with mock data
-        const sampleTickets = [
-            {
-                class: "Business",
-                id: "BUS001",
-                name: "John Doe",
-                from: "New York",
-                to: "Los Angeles",
-                date: "2025-02-15",
-                status: "Pending",
-                isVip: true
-            },
-            {
-                class: "Economy",
-                id: "ECO001",
-                name: "Jane Smith",
-                from: "Chicago",
-                to: "Miami",
-                date: "2025-02-16",
-                status: "Confirmed",
-                isVip: false
-            },
-            {
-                class: "Economy",
-                id: "ECO002",
-                name: "Alice Johnson",
-                from: "London",
-                to: "Paris",
-                date: "2025-02-17",
-                status: "Pending",
-                isVip: true
-            },
-            {
-                class: "Business",
-                id: "BUS002",
-                name: "Bob Wilson",
-                from: "Tokyo",
-                to: "Sydney",
-                date: "2025-02-18",
-                status: "Confirmed",
-                isVip: false
+            if (ticketArray.length === 0) {
+                const noTicketsMsg = document.createElement("div");
+                noTicketsMsg.textContent = "No tickets available";
+                noTicketsMsg.style.textAlign = "center";
+                noTicketsMsg.style.padding = "20px";
+                container.appendChild(noTicketsMsg);
+                return;
             }
-        ];
 
-        // Create sample tickets
-        sampleTickets.forEach(ticket => createTicket(ticket));
+            // Sort tickets by priority (highest first)
+            ticketArray.sort((a, b) => b.assignedPriority - a.assignedPriority);
+            
+            // Create and append ticket elements
+            ticketArray.forEach(ticket => {
+                const ticketElement = createTicket(ticket);
+                container.appendChild(ticketElement);
+            });
+            
+            // Apply current filters
+            filterTickets();
+            
+            // Update last updated time
+            updateLastUpdated();
+        }
+        
+        // Function to filter tickets
+        function filterTickets() {
+            const selectedSeatingClass = document.querySelector('input[name="seatingClass"]:checked').value;
+            const selectedTicketType = document.querySelector('input[name="ticketClass"]:checked').value;
+
+            document.querySelectorAll('.ticket-container').forEach(ticket => {
+                const ticketSeatingClass = ticket.dataset.class; // Business or Economy
+                const ticketType = ticket.dataset.ticketClass;  // VIP or Regular
+                
+                const seatingMatch = selectedSeatingClass === 'all' || ticketSeatingClass === selectedSeatingClass;
+                const typeMatch = selectedTicketType === 'all' || ticketType === selectedTicketType;
+
+                ticket.style.display = seatingMatch && typeMatch ? 'block' : 'none';
+            });
+        }
+        
+        // Function to confirm tickets
+        function confirmTickets() {
+            if (currentTickets.length === 0) {
+                alert("No tickets to confirm");
+                return;
+            }
+            
+            if (confirm("Are you sure you want to confirm these tickets?")) {
+                // Make API call to confirm tickets
+                fetch(API_ENDPOINT + '/confirm', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        tickets: currentTickets.map(ticket => ticket.id)
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert("Tickets confirmed successfully!");
+                    // Refresh ticket data after confirmation
+                    fetchTickets();
+                })
+                .catch(error => {
+                    console.error("Error confirming tickets:", error);
+                    showError("Failed to confirm tickets. Please try again.");
+                });
+            }
+        }
+        
+        // Function to update last updated timestamp
+        function updateLastUpdated() {
+            const lastUpdatedElement = document.getElementById("lastUpdated");
+            if (lastUpdatedElement) {
+                const now = new Date();
+                lastUpdatedElement.textContent = now.toLocaleTimeString();
+            }
+        }
+        
+        // Function to show error message
+        function showError(message) {
+            const container = document.getElementById("ticketQueue");
+            if (!container) return;
+            
+            // Clear existing content
+            container.innerHTML = ""; 
+            
+            // Create and show error message
+            const errorElement = document.createElement("div");
+            errorElement.classList.add("error-message");
+            errorElement.textContent = message;
+            
+            container.appendChild(errorElement);
+        }
+        
+        // Function to fetch tickets from API
+        function fetchTickets() {
+            const container = document.getElementById("ticketQueue");
+            if (!container) return;
+            
+            // Show loading indicator
+            container.innerHTML = '<div class="loading" id="loadingIndicator">Loading tickets...</div>';
+            
+            // Fetch tickets from API
+            fetch(API_ENDPOINT)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Store fetched tickets
+                    currentTickets = data;
+                    // Display tickets
+                    generateSortedTickets(data);
+                })
+                .catch(error => {
+                    console.error("Error fetching tickets:", error);
+                    showError("Failed to load tickets. Please try again.");
+                });
+        }
+        
+        // Attach event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Attach filter event listeners
+            document.querySelectorAll('input[name="seatingClass"], input[name="ticketClass"]').forEach(radio => {
+                radio.addEventListener('change', filterTickets);
+            });
+            
+            // Attach refresh button event listener
+            const refreshButton = document.getElementById("refreshButton");
+            if (refreshButton) {
+                refreshButton.addEventListener('click', fetchTickets);
+            }
+            
+            // Initial data fetch
+            fetchTickets();
+        });
+        
+        // Fallback for development/testing when API is not available
+        function useFallbackData() {
+            console.log("Using fallback data (for development only)");
+            const fallbackTickets = [
+                { class: "Business", id: "BUS001", name: "John Doe", from: "NY", to: "LA", date: "2025-02-15", assignedPriority: 36 },
+                { class: "Economy", id: "ECO001", name: "Jane Smith", from: "Chicago", to: "Miami", date: "2025-02-16", assignedPriority: 24 },
+                { class: "Economy", id: "ECO002", name: "Alice Johnson", from: "London", to: "Paris", date: "2025-02-17", assignedPriority: 27 },
+                { class: "Business", id: "BUS002", name: "Bob Wilson", from: "Tokyo", to: "Sydney", date: "2025-02-18", assignedPriority: 14 }
+            ];
+            currentTickets = fallbackTickets;
+            generateSortedTickets(fallbackTickets);
+        }
+        
+        // Error handling for fetch API failures - use fallback data if in development mode
+        window.addEventListener('error', function(e) {
+            if (e.message.includes('Failed to fetch') && location.hostname === 'localhost') {
+                useFallbackData();
+            }
+        });
+        function toggleAllCheckboxes(checked) {
+    const checkboxes = document.querySelectorAll('input[name="ticketCheckbox"]');
+    checkboxes.forEach(checkbox => {
+      checkbox.checked = checked;
+    });
+  }
+  
+  // Function to load tickets and display them in the table
+  async function loadTickets() {
+    const ticketList = document.getElementById('ticketList');
+    ticketList.innerHTML = '<tr><td colspan="8">Loading tickets...</td></tr>';
+    
+    try {
+      const response = await fetch('/api/tickets');
+      const tickets = await response.json();
+      
+      if (tickets.length === 0) {
+        ticketList.innerHTML = '<tr><td colspan="8">No tickets found</td></tr>';
+        return;
+      }
+      
+      // Clear the loading message
+      ticketList.innerHTML = '';
+      
+      // Add each ticket to the table
+      tickets.forEach(ticket => {
+        const row = document.createElement('tr');
+        
+        row.innerHTML = `
+          <td><input type="checkbox" name="ticketCheckbox" value="${ticket.id}"></td>
+          <td>${ticket.id}</td>
+          <td>${ticket.name}</td>
+          <td>${ticket.class}</td>
+          <td>${ticket.from}</td>
+          <td>${ticket.to}</td>
+          <td>${ticket.date}</td>
+          <td>
+            <button onclick="confirmTicket('${ticket.id}')" class="btn btn-sm btn-primary">Confirm</button>
+            <button onclick="deleteTicket('${ticket.id}')" class="btn btn-sm btn-danger">Delete</button>
+          </td>
+        `;
+        
+        ticketList.appendChild(row);
+      });
+    } catch (err) {
+      console.error('Error loading tickets:', err);
+      ticketList.innerHTML = `<tr><td colspan="8">Error loading tickets: ${err.message}</td></tr>`;
+    }
+  }
+  
+  // Function to delete a ticket
+  async function deleteTicket(ticketId) {
+    if (!confirm(`Are you sure you want to delete ticket ${ticketId}?`)) {
+      return;
+    }
+    
+    try {
+      const response = await fetch(`/api/tickets/${ticketId}`, {
+        method: 'DELETE'
+      });
+      
+      if (response.ok) {
+        alert('Ticket deleted successfully');
+        loadTickets(); // Refresh the list
+      } else {
+        const data = await response.json();
+        alert(`Error deleting ticket: ${data.error}`);
+      }
+    } catch (err) {
+      console.error('Error deleting ticket:', err);
+      alert(`Error deleting ticket: ${err.message}`);
+    }
+  }
+  
+  // Load tickets when the page loads
+  document.addEventListener('DOMContentLoaded', loadTickets);
+  async function confirmTicket(ticketId) {
+  try {
+    const response = await fetch('/api/confirm-ticket', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ ticketId }),
+    });
+    
+    const data = await response.json();
+    
+    if (response.ok) {
+      alert(`Ticket confirmed successfully!`);
+      // Refresh the ticket list or update UI as needed
+      location.reload(); // Simple refresh, you might want to handle this more elegantly
+    } else {
+      alert(`Error confirming ticket: ${data.error}`);
+    }
+  } catch (err) {
+    console.error('Error confirming ticket:', err);
+    alert(`Error confirming ticket: ${err.message}`);
+  }
+}
+
+// Function to confirm multiple tickets
+async function confirmSelectedTickets() {
+  // Get all selected ticket checkboxes
+  const checkboxes = document.querySelectorAll('input[name="ticketCheckbox"]:checked');
+  
+  if (checkboxes.length === 0) {
+    alert('Please select at least one ticket to confirm');
+    return;
+  }
+  
+  const ticketIds = Array.from(checkboxes).map(checkbox => checkbox.value);
+  
+  try {
+    const response = await fetch('/api/confirm-tickets', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ ticketIds }),
+    });
+    
+    const data = await response.json();
+    
+    if (response.ok) {
+      alert(`Confirmed ${data.summary.succeeded} of ${data.summary.total} tickets successfully!`);
+      if (data.summary.failed > 0) {
+        console.warn('Some tickets failed to confirm:', data.results.failed);
+      }
+      // Refresh the ticket list or update UI as needed
+      location.reload(); // Simple refresh
+    } else {
+      alert(`Error confirming tickets: ${data.error}`);
+    }
+  } catch (err) {
+    console.error('Error confirming tickets:', err);
+    alert(`Error confirming tickets: ${err.message}`);
+  }
+}
+
+// Example HTML for confirm button in your admin interface:
+/*
+<button id="confirmSelectedBtn" onclick="confirmSelectedTickets()">Confirm Selected Tickets</button>
+
+// For individual ticket confirm buttons:
+<button onclick="confirmTicket('ticket-id-here')">Confirm</button>
+*/
     </script>
 </body>
 </html>
