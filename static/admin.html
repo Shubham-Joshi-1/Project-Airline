@@ -58,7 +58,6 @@
         button {
             padding: 12px 24px;
             margin: 12px;
-            margin-left: 48%;
             border-radius: 10px;
             border: none;
             cursor: pointer;
@@ -129,6 +128,18 @@
             gap: 10px;
             margin: 10px;
             font-size: 16px;
+            position: relative;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 10px 0;
+            background: linear-gradient(to right, #f5f5f5, #e0e0e0);
+        }
+
+        .ticket-info.vip {
+            background: linear-gradient(to right, #ffd700, #ffa500);
+            color: black;
+            border: 2px solid #ffd700;
         }
 
         .ticket-info div {
@@ -168,6 +179,79 @@
             border-radius: 5px;
             margin: 5px auto;
             width: 90%;
+        }
+
+        /* Table styles with ticket container styling */
+        .ticket-table {
+            width: 90%;
+            margin: 20px auto;
+            margin-top: 100px;
+            border-collapse: collapse;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .ticket-table th {
+            background-color: #4CAF50;
+            color: white;
+            text-align: left;
+            padding: 12px;
+        }
+
+        .ticket-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .ticket-actions {
+            display: flex;
+            justify-content: center;
+            margin: 15px;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-success {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #607D8B;
+            color: white;
+        }
+
+        .btn-primary {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: #F44336;
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 0.8em;
+        }
+        
+        .ticket-row-vip {
+            background: linear-gradient(to right, #ffd700, #ffa500) !important;
+            color: black;
+            border: 2px solid #ffd700;
+            position: relative;
+        }
+        
+        #confirmButton {
+            margin-left: 48%;
         }
     </style>
 </head>
@@ -218,16 +302,8 @@
         
         <button id="confirmButton" onclick="confirmTickets()">CONFIRM</button>
     </div>
-    <div class="ticket-actions">
-        <button id="confirmSelectedBtn" class="btn btn-success" onclick="confirmSelectedTickets()">
-          Confirm Selected Tickets
-        </button>
-        <button id="refreshBtn" class="btn btn-secondary" onclick="location.reload()">
-          Refresh List
-        </button>
-      </div>
       
-      <table class="ticket-table">
+    <table class="ticket-table">
         <thead>
           <tr>
             <th><input type="checkbox" id="selectAllCheckbox" onclick="toggleAllCheckboxes(this.checked)"></th>
@@ -242,23 +318,18 @@
         </thead>
         <tbody id="ticketList">
           <!-- Tickets will be inserted here dynamically -->
-          <!-- Example row:
-          <tr>
-            <td><input type="checkbox" name="ticketCheckbox" value="ticket-id-1"></td>
-            <td>TICKET001</td>
-            <td>John Doe</td>
-            <td>Economy</td>
-            <td>New York</td>
-            <td>London</td>
-            <td>2025-03-15</td>
-            <td>
-              <button onclick="confirmTicket('ticket-id-1')" class="btn btn-sm btn-primary">Confirm</button>
-              <button onclick="deleteTicket('ticket-id-1')" class="btn btn-sm btn-danger">Delete</button>
-            </td>
-          </tr>
-          -->
         </tbody>
-      </table>
+    </table>
+    
+    <!-- Moved ticket action buttons below the table -->
+    <div class="ticket-actions">
+        <button id="confirmSelectedBtn" class="btn btn-success" onclick="confirmSelectedTickets()">
+          Confirm Selected Tickets
+        </button>
+        <button id="refreshBtn" class="btn btn-secondary" onclick="refreshTicketTable()">
+          Refresh List
+        </button>
+    </div>
     
     <script>
         // API endpoint configurations
@@ -294,12 +365,12 @@
             const ticketInfo = document.createElement("div");
             ticketInfo.classList.add("ticket-info");
             ticketInfo.innerHTML = `
-                <div><span class="ticket-label">Ticket ID:</span> ${ticketData.id}</div>
-                <div><span class="ticket-label">Name:</span> ${ticketData.name}</div>
-                <div><span class="ticket-label">From:</span> ${ticketData.from}</div>
-                <div><span class="ticket-label">To:</span> ${ticketData.to}</div>
-                <div><span class="ticket-label">Date:</span> ${ticketData.date}</div>
-                <div><span class="ticket-label">Priority:</span> ${ticketData.assignedPriority}</div>
+                <div class="tclass"><span class="ticket-label">Ticket ID:</span> ${ticketData.id}</div>
+                <div class="tclass"><span class="ticket-label">Name:</span> ${ticketData.name}</div>
+                <div class="tclass"><span class="ticket-label">From:</span> ${ticketData.from}</div>
+                <div class="tclass"><span class="ticket-label">To:</span> ${ticketData.to}</div>
+                <div class="tclass"><span class="ticket-label">Date:</span> ${ticketData.date}</div>
+                <div class="tclass"><span class="ticket-label">Priority:</span> ${ticketData.assignedPriority}</div>
             `;
 
             ticketContainer.appendChild(heading);
@@ -438,6 +509,8 @@
                     currentTickets = data;
                     // Display tickets
                     generateSortedTickets(data);
+                    // Also refresh the ticket list in the table
+                    loadTickets();
                 })
                 .catch(error => {
                     console.error("Error fetching tickets:", error);
@@ -473,6 +546,8 @@
             ];
             currentTickets = fallbackTickets;
             generateSortedTickets(fallbackTickets);
+            // Also populate the table with fallback data
+            populateTicketTable(fallbackTickets);
         }
         
         // Error handling for fetch API failures - use fallback data if in development mode
@@ -481,153 +556,188 @@
                 useFallbackData();
             }
         });
+        
         function toggleAllCheckboxes(checked) {
-    const checkboxes = document.querySelectorAll('input[name="ticketCheckbox"]');
-    checkboxes.forEach(checkbox => {
-      checkbox.checked = checked;
-    });
-  }
-  
-  // Function to load tickets and display them in the table
-  async function loadTickets() {
-    const ticketList = document.getElementById('ticketList');
-    ticketList.innerHTML = '<tr><td colspan="8">Loading tickets...</td></tr>';
-    
-    try {
-      const response = await fetch('/api/tickets');
-      const tickets = await response.json();
-      
-      if (tickets.length === 0) {
-        ticketList.innerHTML = '<tr><td colspan="8">No tickets found</td></tr>';
-        return;
-      }
-      
-      // Clear the loading message
-      ticketList.innerHTML = '';
-      
-      // Add each ticket to the table
-      tickets.forEach(ticket => {
-        const row = document.createElement('tr');
+            const checkboxes = document.querySelectorAll('input[name="ticketCheckbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = checked;
+            });
+        }
         
-        row.innerHTML = `
-          <td><input type="checkbox" name="ticketCheckbox" value="${ticket.id}"></td>
-          <td>${ticket.id}</td>
-          <td>${ticket.name}</td>
-          <td>${ticket.class}</td>
-          <td>${ticket.from}</td>
-          <td>${ticket.to}</td>
-          <td>${ticket.date}</td>
-          <td>
-            <button onclick="confirmTicket('${ticket.id}')" class="btn btn-sm btn-primary">Confirm</button>
-            <button onclick="deleteTicket('${ticket.id}')" class="btn btn-sm btn-danger">Delete</button>
-          </td>
-        `;
+        // Function to populate the ticket table with styled rows
+        function populateTicketTable(tickets) {
+            const ticketList = document.getElementById('ticketList');
+            if (!ticketList) return;
+            
+            ticketList.innerHTML = '';
+            
+            tickets.forEach(ticket => {
+                const row = document.createElement('tr');
+                // Add VIP class if priority > 26
+                if (ticket.assignedPriority > 26) {
+                    row.classList.add('ticket-row-vip');
+                }
+                
+                row.innerHTML = `
+                    <td><input type="checkbox" name="ticketCheckbox" value="${ticket.id}"></td>
+                    <td>${ticket.id}</td>
+                    <td>${ticket.name}</td>
+                    <td>${ticket.class}</td>
+                    <td>${ticket.from}</td>
+                    <td>${ticket.to}</td>
+                    <td>${ticket.date}</td>
+                    <td>
+                        <button onclick="confirmTicket('${ticket.id}')" class="btn btn-sm btn-primary">Confirm</button>
+                        <button onclick="deleteTicket('${ticket.id}')" class="btn btn-sm btn-danger">Delete</button>
+                    </td>
+                `;
+                
+                ticketList.appendChild(row);
+            });
+        }
+  
+        // Function to load tickets and display them in the table
+        async function loadTickets() {
+            const ticketList = document.getElementById('ticketList');
+            if (!ticketList) return;
+            
+            ticketList.innerHTML = '<tr><td colspan="8">Loading tickets...</td></tr>';
+            
+            try {
+                // Use current tickets if already loaded, otherwise fetch
+                if (currentTickets && currentTickets.length > 0) {
+                    populateTicketTable(currentTickets);
+                } else {
+                    const response = await fetch('/api/tickets');
+                    const tickets = await response.json();
+                    
+                    if (tickets.length === 0) {
+                        ticketList.innerHTML = '<tr><td colspan="8">No tickets found</td></tr>';
+                        return;
+                    }
+                    
+                    populateTicketTable(tickets);
+                }
+            } catch (err) {
+                console.error('Error loading tickets:', err);
+                ticketList.innerHTML = `<tr><td colspan="8">Error loading tickets: ${err.message}</td></tr>`;
+                
+                // Try fallback data in development
+                if (location.hostname === 'localhost') {
+                    useFallbackData();
+                }
+            }
+        }
+  
+        // Function to delete a ticket
+        async function deleteTicket(ticketId) {
+            if (!confirm(`Are you sure you want to delete ticket ${ticketId}?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/tickets/${ticketId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    alert('Ticket deleted successfully');
+                    fetchTickets(); // Refresh both ticket displays
+                } else {
+                    const data = await response.json();
+                    alert(`Error deleting ticket: ${data.error}`);
+                }
+            } catch (err) {
+                console.error('Error deleting ticket:', err);
+                alert(`Error deleting ticket: ${err.message}`);
+            }
+        }
+  
+        async function confirmTicket(ticketId) {
+            try {
+                const response = await fetch('/api/confirm-ticket', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ ticketId }),
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert(`Ticket confirmed successfully!`);
+                    fetchTickets(); // Refresh all ticket displays
+                } else {
+                    alert(`Error confirming ticket: ${data.error}`);
+                }
+            } catch (err) {
+                console.error('Error confirming ticket:', err);
+                alert(`Error confirming ticket: ${err.message}`);
+            }
+        }
+
+        // Function to confirm multiple tickets
+        async function confirmSelectedTickets() {
+            // Get all selected ticket checkboxes
+            const checkboxes = document.querySelectorAll('input[name="ticketCheckbox"]:checked');
+            
+            if (checkboxes.length === 0) {
+                alert('Please select at least one ticket to confirm');
+                return;
+            }
+            
+            const ticketIds = Array.from(checkboxes).map(checkbox => checkbox.value);
+            
+            try {
+                const response = await fetch('/api/confirm-tickets', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ ticketIds }),
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert(`Confirmed ${data.summary.succeeded} of ${data.summary.total} tickets successfully!`);
+                    if (data.summary.failed > 0) {
+                        console.warn('Some tickets failed to confirm:', data.results.failed);
+                    }
+                    refreshTicketTable(); // Only refresh the ticket table, not the container
+                } else {
+                    alert(`Error confirming tickets: ${data.error}`);
+                }
+            } catch (err) {
+                console.error('Error confirming tickets:', err);
+                alert(`Error confirming tickets: ${err.message}`);
+            }
+        }
         
-        ticketList.appendChild(row);
-      });
-    } catch (err) {
-      console.error('Error loading tickets:', err);
-      ticketList.innerHTML = `<tr><td colspan="8">Error loading tickets: ${err.message}</td></tr>`;
-    }
-  }
-  
-  // Function to delete a ticket
-  async function deleteTicket(ticketId) {
-    if (!confirm(`Are you sure you want to delete ticket ${ticketId}?`)) {
-      return;
-    }
-    
-    try {
-      const response = await fetch(`/api/tickets/${ticketId}`, {
-        method: 'DELETE'
-      });
-      
-      if (response.ok) {
-        alert('Ticket deleted successfully');
-        loadTickets(); // Refresh the list
-      } else {
-        const data = await response.json();
-        alert(`Error deleting ticket: ${data.error}`);
-      }
-    } catch (err) {
-      console.error('Error deleting ticket:', err);
-      alert(`Error deleting ticket: ${err.message}`);
-    }
-  }
-  
-  // Load tickets when the page loads
-  document.addEventListener('DOMContentLoaded', loadTickets);
-  async function confirmTicket(ticketId) {
-  try {
-    const response = await fetch('/api/confirm-ticket', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ ticketId }),
-    });
-    
-    const data = await response.json();
-    
-    if (response.ok) {
-      alert(`Ticket confirmed successfully!`);
-      // Refresh the ticket list or update UI as needed
-      location.reload(); // Simple refresh, you might want to handle this more elegantly
-    } else {
-      alert(`Error confirming ticket: ${data.error}`);
-    }
-  } catch (err) {
-    console.error('Error confirming ticket:', err);
-    alert(`Error confirming ticket: ${err.message}`);
-  }
-}
-
-// Function to confirm multiple tickets
-async function confirmSelectedTickets() {
-  // Get all selected ticket checkboxes
-  const checkboxes = document.querySelectorAll('input[name="ticketCheckbox"]:checked');
-  
-  if (checkboxes.length === 0) {
-    alert('Please select at least one ticket to confirm');
-    return;
-  }
-  
-  const ticketIds = Array.from(checkboxes).map(checkbox => checkbox.value);
-  
-  try {
-    const response = await fetch('/api/confirm-tickets', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ ticketIds }),
-    });
-    
-    const data = await response.json();
-    
-    if (response.ok) {
-      alert(`Confirmed ${data.summary.succeeded} of ${data.summary.total} tickets successfully!`);
-      if (data.summary.failed > 0) {
-        console.warn('Some tickets failed to confirm:', data.results.failed);
-      }
-      // Refresh the ticket list or update UI as needed
-      location.reload(); // Simple refresh
-    } else {
-      alert(`Error confirming tickets: ${data.error}`);
-    }
-  } catch (err) {
-    console.error('Error confirming tickets:', err);
-    alert(`Error confirming tickets: ${err.message}`);
-  }
-}
-
-// Example HTML for confirm button in your admin interface:
-/*
-<button id="confirmSelectedBtn" onclick="confirmSelectedTickets()">Confirm Selected Tickets</button>
-
-// For individual ticket confirm buttons:
-<button onclick="confirmTicket('ticket-id-here')">Confirm</button>
-*/
+        // New function to only refresh the ticket table without affecting the container
+        async function refreshTicketTable() {
+            try {
+                const response = await fetch('/api/tickets');
+                const tickets = await response.json();
+                
+                // Update the current tickets array
+                currentTickets = tickets;
+                
+                // Only update the table, not the container
+                populateTicketTable(tickets);
+                
+                alert('Ticket list refreshed successfully!');
+            } catch (err) {
+                console.error('Error refreshing ticket list:', err);
+                alert(`Error refreshing ticket list: ${err.message}`);
+                
+                // Try fallback data in development
+                if (location.hostname === 'localhost') {
+                    populateTicketTable(currentTickets || []);
+                }
+            }
+        }
     </script>
 </body>
 </html>
