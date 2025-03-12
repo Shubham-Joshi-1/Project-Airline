@@ -274,15 +274,15 @@
             <div class="form-group">
                 <label class="size">Member Type*</label>
                 <div class="member-type-group">
-                    <label><input type="radio" name="member-type" value="vip" required> VIP</label>
-                    <label><input type="radio" name="member-type" value="regular" required> Regular</label>
+                    <label><input type="radio" name="memberType" value="vip" required> VIP</label>
+                    <label><input type="radio" name="memberType" value="regular" required> Regular</label>
                 </div>
             </div> 
             <div class="form-group">
                 <label class="size">Class Type*</label>
                 <div class="member-type-group">
-                    <label><input type="radio" name="seat-type" value="business" checked> Business</label>
-                    <label><input type="radio" name="seat-type" value="economy"> Economy</label>
+                    <label><input type="radio" name="seatClass" value="business" checked> Business</label>
+                    <label><input type="radio" name="seatClass" value="economy"> Economy</label>
                 </div>
             </div>
 
@@ -497,7 +497,7 @@
             
             // Keep the existing display toggle functionality
             function displayToggle() {
-                let value = document.querySelector('input[name="seat-type"]:checked').value;
+                let value = document.querySelector('input[name="seatClass"]:checked').value;
                 if (value === "business") {
                     economySection.style.display = "none";
                     businessSection.style.display = "block";
@@ -508,7 +508,7 @@
             }
 
             // Add event listeners to the seat type radio buttons
-            let seatTypeRadios = document.querySelectorAll('input[name="seat-type"]');
+            let seatTypeRadios = document.querySelectorAll('input[name="seatClass"]');
             seatTypeRadios.forEach(radio => {
                 radio.addEventListener('change', displayToggle);
             });

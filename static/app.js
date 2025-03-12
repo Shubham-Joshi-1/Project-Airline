@@ -29,13 +29,13 @@
     saveUninitialized: true,
     cookie: { secure: false } 
   }));
-  app.use((req, res, next) => {
-    if (!req.session.sessionId) {
-        req.session.sessionId = uuidv4(); 
-        console.log("New session ID assigned:", req.session.sessionId);
-    }
-    next();
-  });
+  // app.use((req, res, next) => {
+  //   if (!req.session.sessionId) {
+  //       req.session.sessionId = uuidv4(); 
+  //       console.log("New session ID assigned:", req.session.sessionId);
+  //   }
+  //   next();
+  // });
   app.use((req, res, next) => {
     if (req.path === "/favicon.ico") {
         return res.status(204).end(); 
@@ -222,20 +222,20 @@
 app.post('/api/confirm-ticket', async (req, res) => {
   try {
     const { ticketId } = req.body; // This could be session ID or _id of the temporary ticket
+    console.log(ticketId);
     
     // Find the temporary ticket by ID or session ID
     let tempTicket;
     if (mongoose.Types.ObjectId.isValid(ticketId)) {
       tempTicket = await pTicket.findById(ticketId);
     } else {
-      // If not a valid ObjectId, try to find by sessionId
       tempTicket = await pTicket.findOne({ 
         $or: [
-          { sessionId: ticketId },
-          { _id: ticketId }
+          { ticketId: ticketId }
         ]
       });
     }
+    
     
     if (!tempTicket) {
       return res.status(404).json({ error: "Temporary ticket not found" });
@@ -267,7 +267,7 @@ app.post('/api/confirm-ticket', async (req, res) => {
       flight_name: tempTicket.flight_name || 'Default Airline',
       flight_no: tempTicket.flight_no || Math.floor(Math.random() * 1000),
       flight_price: tempTicket.flight_price || 0,
-      ticketId: ticketId,
+      ticketId: tempTicket.ticketId,
       assignedPriority: tempTicket.assignedPriority || 50 // Default priority
     });
     
@@ -276,7 +276,7 @@ app.post('/api/confirm-ticket', async (req, res) => {
     console.log('Final ticket created:', finalTicket);
     
     // Delete the temporary ticket
-    await pTicket.findByIdAndDelete(tempTicket._id);
+    await pTicket.findOneAndDelete({ ticketId: tempTicket.ticketId });
     console.log('Temporary ticket deleted');
 
     // await Seat.findOneAndUpdate(
@@ -575,6 +575,12 @@ app.post('/api/confirm-tickets', async (req, res) => {
         res.status(500).json({ error: "Error fetching tickets from database: " + err.message });
       }
     });
+    app.get("/new_session", (req, res) => {
+      const newSessionId = uuidv4();
+      req.session.sessionId = newSessionId;
+      console.log("New session started:", newSessionId);
+      res.json({ sessionId: newSessionId });
+  });
     
 
 

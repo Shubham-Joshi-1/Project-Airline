@@ -104,6 +104,16 @@ function autocomplete(input, suggestions) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
+    fetch("http://localhost:3002/new_session")
+    .then(res => res.json())
+    .then(data => {
+        console.log("New session ID:", data.sessionId);
+        sessionStorage.setItem("sessionId", data.sessionId); 
+    })
+    
+    .catch(err => {
+        console.error("Failed to create session:", err);
+    });
     console.log("DOM fully loaded - initializing all components");
     
     const checkTicketStatusButton = document.getElementById("check-ticket-status");
