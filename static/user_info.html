@@ -3,107 +3,200 @@
 <head>
     <title>Traveler Information</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
         body {
-            background-image: url('./assets/user.jpg'); 
+            background-image: url('./assets/user-info.jpg'); 
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
         }
+        
+        /* Overlay to add a slight darkening effect */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4));
+            z-index: -1;
+        }
+        
         .navbar {
-            border: 2px red solid;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: black;
-        }
-        .container {
-            max-width: 800px;
-            margin: 20px auto 20px 50px; 
-            background-color: rgba(255, 186, 186, 0.444);
-            backdrop-filter: blur(0.9);
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid rgba(255, 75, 43, 0.5);
+            color: #fff;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
         }
+        
+        .container {
+            width: 90%;
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(12px);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+        
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 24px;
+            text-align: center;
         }
+        
         .form-group label {
             display: block;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            font-size: 18px;
         }
+        
         .form-group input[type="text"],
         .form-group input[type="email"],
         .form-group select,
         .form-group input[type="date"] {
-            width: calc(100% - 20px);
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
             font-size: 16px;
+            font-weight: 600;
+            color: #000000;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s ease;
         }
-        .form-group input[type="radio"] {
-            margin-right: 10px;
+        
+        .form-group input[type="text"]::placeholder,
+        .form-group input[type="email"]::placeholder {
+            color: rgba(0, 0, 0, 0.7);
         }
-        .form-group .checkbox-group {
+        
+        .form-group input[type="text"]:focus,
+        .form-group input[type="email"]:focus,
+        .form-group input[type="date"]:focus {
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            outline: none;
+        }
+        
+        .gender-group {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 10px;
+        }
+        
+        .gender-group label {
             display: flex;
             align-items: center;
+            font-weight: normal;
+            cursor: pointer;
         }
-        .form-group .checkbox-group input[type="checkbox"] {
+        
+        input[type="radio"] {
             margin-right: 10px;
+            accent-color: #87ff2b;
+            transform: scale(1.2);
         }
-        .form-group .gender-group,
+        
+        .name-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .button-group {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .button-group button {
+            background: linear-gradient(to right, #43f21c, #17f207);
+            color: #fff;
+            border: none;
+            padding: 16px 40px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 6px 20px rgba(27, 187, 59, 0.4);
+        }
+        
+        .button-group button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(105, 212, 28, 0.5);
+        }
+        
+        /* Add a decorative airplane to better visualize the effect */
+        .airplane-illustration {
+            position: absolute;
+            top: 10%;
+            right: 5%;
+            width: 150px;
+            height: 150px;
+            opacity: 0.2;
+            z-index: 0;
+        }
+        
         .form-group .seat-class-group,
         .form-group .member-type-group {
             display: flex;
-            align-items: center;
-            gap: 20px;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 10px;
         }
-        .form-group .gender-group label,
+        
         .form-group .seat-class-group label,
         .form-group .member-type-group label {
-            font-weight: normal;
-        }
-        .form-group .toggle-link {
-            color: #007bff;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-        .form-group .toggle-link:hover {
-            text-decoration: none;
-        }
-        .button-group {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .button-group button {
-            background-color: #ff4b2b;
-            color: #fff;
-            border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .button-group button:hover {
-            background-color: #e0431a;
-        }
-        .name-group {
             display: flex;
-            gap: 10px;
+            align-items: center;
+            font-weight: normal;
+            cursor: pointer;
         }
+        
         @media (max-width: 600px) {
-            .form-group .gender-group,
+            .name-group {
+                flex-direction: column;
+            }
+            
+            .gender-group,
             .form-group .seat-class-group,
             .form-group .member-type-group {
                 flex-direction: column;
-                align-items: flex-start;
+                align-items: center;
+                gap: 15px;
             }
-            .name-group {
-                flex-direction: column;
+            
+            .container {
+                padding: 20px;
             }
         }
     </style>
@@ -112,54 +205,58 @@
     <div class="navbar">
         Traveler Information
     </div>
+    
+
+    
     <form action="/user_info" method="post">
-    <div class="container">
-        <div class="form-group">
-            <label for="email">Email Address*</label>
-            <input type="email" id="email" name="email" required>
-        </div>
-        
-        <div class="form-group">
-            <label>Traveler Info :</label>
-            <div class="form-group name-group">
-                <input type="text" id="first_name" name="first_name" placeholder="First Name*" required>
-                <input type="text" id="last_name" name="last_name" placeholder="Last Name*" required>
+        <div class="container">
+            <div class="form-group">
+                <label for="email">Email Address*</label>
+                <input type="email" id="email" placeholder="Enter Email*" name="email" required>
             </div>
-        </div>  
+            
+            <div class="form-group">
+                <label>Traveler Info</label>
+                <div class="name-group">
+                    <input type="text" id="first_name" name="first_name" placeholder="First Name*" required>
+                    <input type="text" id="last_name" name="last_name" placeholder="Last Name*" required>
+                </div>
+            </div>  
 
-        <div class="form-group">
-            <label>Date of Birth*</label>
-            <input type="date" id="dob" name="dob" required>
-        </div>
+            <div class="form-group">
+                <label>Date of Birth*</label>
+                <input type="date" id="dob" name="dob" required>
+            </div>
 
-        <div class="form-group">
-            <label>Gender*</label>
-            <div class="gender-group">
-                <label><input type="radio" name="gender" value="male" required> Male</label>
-                <label><input type="radio" name="gender" value="female" required> Female</label>
+            <div class="form-group">
+                <label>Gender*</label>
+                <div class="gender-group">
+                    <label><input type="radio" name="gender" value="male" required> Male</label>
+                    <label><input type="radio" name="gender" value="female" required> Female</label>
+                </div>
+            </div>
+
+            <!-- Re-adding the commented sections from your original code -->
+            <div class="form-group">
+                <label>Seat Class*</label>
+                <div class="seat-class-group">
+                    <label><input type="radio" name="seat-class" value="economy" required> Economy</label>
+                    <label><input type="radio" name="seat-class" value="business" required> Business</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Member Type*</label>
+                <div class="member-type-group">
+                    <label><input type="radio" name="member-type" value="vip" required> VIP</label>
+                    <label><input type="radio" name="member-type" value="regular" required> Regular</label>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="submit">Continue to Seats</button>
             </div>
         </div>
-
-        <!-- <div class="form-group">
-            <label>Seat Class*</label>
-            <div class="seat-class-group">
-                <label><input type="radio" name="seat-class" value="economy" required> Economy</label>
-                <label><input type="radio" name="seat-class" value="business" required> Business</label>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label>Member Type*</label>
-            <div class="member-type-group">
-                <label><input type="radio" name="member-type" value="vip" required> VIP</label>
-                <label><input type="radio" name="member-type" value="regular" required> Regular</label>
-            </div>
-        </div> -->
-
-        <div class="button-group">
-            <button>Continue to Seats</button>
-        </div>
-    </div>
-</form>
+    </form>
 </body>
 </html>

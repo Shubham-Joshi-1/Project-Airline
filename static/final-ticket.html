@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Ticket</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .ticket-container {
+            background: white;
+            width: 400px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            text-align: center;
+            border-left: 5px solid #007bff;
+        }
+        .ticket-container h2 {
+            margin-bottom: 15px;
+            color: #007bff;
+        }
+        .ticket-details {
+            text-align: left;
+            font-size: 14px;
+        }
+        .ticket-details p {
+            margin: 8px 0;
+            padding: 5px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        .ticket-details strong {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="ticket-container">
+        <h2>Flight Ticket</h2>
+        <div class="ticket-details">
+            <p><strong>Departure:</strong> <span id="departure"></span></p>
+            <p><strong>Arrival:</strong> <span id="arrival"></span></p>
+            <p><strong>Departure Date:</strong> <span id="depart_date"></span></p>
+            <p><strong>Email:</strong> <span id="email"></span></p>
+            <p><strong>Gender:</strong> <span id="gender"></span></p>
+            <p><strong>Date of Birth:</strong> <span id="dob"></span></p>
+            <p><strong>Flight Name:</strong> <span id="flight_name"></span></p>
+            <p><strong>Flight No:</strong> <span id="flight_no"></span></p>
+            <p><strong>Price:</strong> $<span id="flight_price"></span></p>
+            <p><strong>Ticket ID:</strong> <span id="ticketId"></span></p>
+            <p><strong>Assigned Priority:</strong> <span id="assignedPriority"></span></p>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const response = await fetch("http://localhost:3000/ticket"); // Fetch data from Node.js backend
+                const tempTicket = await response.json();
+                
+                document.getElementById("departure").textContent = tempTicket.departure;
+                document.getElementById("arrival").textContent = tempTicket.arrival;
+                document.getElementById("depart_date").textContent = tempTicket.departureDate;
+                document.getElementById("first_name").textContent = tempTicket.first_name;
+                document.getElementById("last_name").textContent = tempTicket.last_name;
+                document.getElementById("email").textContent = tempTicket.email;
+                document.getElementById("gender").textContent = tempTicket.gender;
+                document.getElementById("dob").textContent = tempTicket.dob;
+                document.getElementById("session_id").textContent = tempTicket.sessionId;
+                document.getElementById("flight_name").textContent = tempTicket.flight_name || 'Default Airline';
+                document.getElementById("flight_no").textContent = tempTicket.flight_no || Math.floor(Math.random() * 1000);
+                document.getElementById("flight_price").textContent = tempTicket.flight_price || 0;
+                document.getElementById("ticketId").textContent = tempTicket.ticketId;
+                document.getElementById("assignedPriority").textContent = tempTicket.assignedPriority || 50;
+            } catch (error) {
+                console.error("Error fetching ticket data:", error);
+            }
+        });
+    </script>
+</body>
+</html>
