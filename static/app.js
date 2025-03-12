@@ -1,89 +1,21 @@
   const express = require("express");
-  const mongoose = require("mongoose");
   const path = require("path");
   const cors = require("cors");
   const app = express();
   const staticPath = path.join(__dirname, "../static");
-  const { spawn } = require("child_process");
   const { Console } = require("console");
   const session = require("express-session");
   const { v4: uuidv4 } = require("uuid"); 
-  const { compileFunction } = require("vm");
-  mongoose.connect("mongodb+srv://Ansh:airline123@cluster0.zycn0.mongodb.net/");
-  const db = mongoose.connection;
-
-
-  db.on("error", () => console.log("Error connecting to the database"));
-  db.once("open", () => console.log("MongoDb connected"));
-
-
-  const seat_layout_schema = new mongoose.Schema({ 
-    row: Number,
-    col: Number, 
-    member_type: String,  
-    ticket_id: String,
-    p_id: String, 
-    status: String
-  });
-  const Seat = mongoose.model('Seat', seat_layout_schema, 'SeatAlloted');
-
-
-  const partial_ticket_schema=new mongoose.Schema({
-    departure: String,
-    arrival: String,
-    departureDate: Date,
-    first_name: String,
-    last_name: String,
-    email: String,
-    gender: String,
-    dob: Date,
-    sessionId: String,
-    tripType:String,
-    flight_name: String,
-    flight_no: Number,
-    flight_price:Number,
-    row:Number,
-    col:Number    
-  });
-  const pTicket = mongoose.model('pTicket', partial_ticket_schema, 'TemporaryTicket');
-
-  const final_ticket_schema=new mongoose.Schema({
-    departure: String,
-    arrival: String,
-    depart_date: Date,
-    first_name: String,
-    last_name: String,
-    email: String,
-    gender: String,
-    dob: Date,
-    session_id: String,
-    tripType:String,
-    flight_name: String,
-    flight_no: Number,
-    flight_price:Number,
-
-    ticket_id:String,
-    priority:Number
-      });
-  const fTicket = mongoose.model('fTicket', final_ticket_schema, 'Tickets');
-
-
-
-
-  const admin_authentication_schema=new mongoose.Schema({
-    email: String,
-    password: String
-
-      });
-  const Admin = mongoose.model('Admin', admin_authentication_schema, 'admin_authentication');
-  const priority_schema=new mongoose.Schema({
-    priority_vip_count: Number,
-    priority_regular_count: Number
-      });
-  const Priority = mongoose.model('Priority', priority_schema, 'PriorityCount');
-    
-    
-                                                
+  require("./config");
+  const mongoose = require("mongoose");
+ 
+  const {
+    Seat,
+    pTicket,
+    fTicket,
+    Admin,
+    Priority
+  } = require('./models.js')                                           
     
   app.use(cors());
   app.use(express.static(staticPath));
@@ -110,6 +42,11 @@
     }
     next();
   });
+  // app.use((req, res, next) => {
+  //   console.log(`${req.method} request to ${req.url}`);
+  //   next();
+  // });
+  //all funtions here
   function checkAdminlogin(req, res, next){
     if(req.session.adminLoggedIn){
       next();
@@ -119,15 +56,31 @@
 
   }
   function generateTicketID(seatClass, row, col, priority) {
-    let ticketID = seatClass.charAt(0); 
+    let ticketId= seatClass.charAt(0); 
     
-    if (priority === "VIP") {
-        ticketID += `VIP_R${row}C${col}`;
-    } else {
-        ticketID += `_R${row}C${col}`;
+    if (priority >26 && priority<=36) {
+        ticketId += `VIP_R${row}C${col}`;
+    }else if (priority >0 && priority<=26){
+        ticketId += `_R${row}C${col}`;
     }
+    return ticketId;
+  }
+  function parseSeat(seatString) {
+    const [row, col] = seatString.split("-").map(Number);
+    return { row, col };
+  }
+  function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+  function assignPriority(memberType,vipCounter,regularCounter){
+    let priority;
+    if (memberType=="vip"){
+     priority=vipCounter;
+    }else{
+      priority=regularCounter;
+    }
+    return priority;
 
-    return ticketID;
   }
   app.post("/available_flights", async (req, res) => {
     const sessionId = req.session.sessionId;
@@ -145,9 +98,7 @@
         await newTicket.save();
         console.log("Record inserted");
 
-      function getRandomNumber(min, max) {
-          return Math.floor(Math.random() * (max - min + 1)) + min;
-      }
+      
         res.json([
             {tripType, departure, arrival, departureDate ,price:getRandomNumber(5000, 10000)},
             {tripType, departure, arrival, departureDate ,price:getRandomNumber(5000, 10000)}
@@ -176,20 +127,72 @@
           return res.status(500).json({ success: false });
         }
     });
-  app.post("/seat_layout", async (req, res) => {
-    const { seat } = req.body; // Expects seat ID like "1-1"
-    try {
-      const result = await Seat.updateOne(
-        { p_id: seat },
-        { $set: { status: "booked" } }
-    );
-    if(!seat){
-      return res.status(500).json({message:"pls select seat"});
-    }  
-    res.redirect("/");
-    } catch (err) {
-      return res.status(500).json({ success: false });
-    }
+    app.post("/seat_layout", async (req, res) => {
+      const { seat, memberType, seatClass } = req.body; // Expects seat ID like "1-1"
+      console.log(req.body);
+      
+      if (!seat) {
+        return res.status(400).json({ message: "Please select a seat" });
+      }
+      
+      try {
+        const { row, col } = parseSeat(seat);
+        const priority = await Priority.findOne();
+        console.log("fetched till here");
+        
+        const assignedPriority = assignPriority(
+          memberType,
+          priority.priority_vip_count,
+          priority.priority_regular_count
+        );
+        
+        const ticketId = generateTicketID(seatClass, row, col, assignedPriority);
+        
+        const updateSeat = await Seat.findOneAndUpdate(
+          { p_id: seat },
+          { $set: { status: "booked", ticketId: ticketId, } },
+          {new:true}
+        );
+        
+        if (!updateSeat) {
+          console.error("No Seat found for p_id:", seat);
+        }
+        
+        const sessionId = req.session.sessionId;
+        const updateTicket = await pTicket.findOneAndUpdate(
+          { sessionId },
+          { 
+            $set: {
+              ticketId: ticketId,
+              assignedPriority: assignedPriority,
+              memberType: memberType
+            }
+          },
+          { new: true }
+        );
+        
+        if (!updateTicket) {
+          console.error("No pTicket found for sessionId:", sessionId);
+        }
+        
+        // Update priority count
+        if (memberType === "vip") {
+          await Priority.findByIdAndUpdate(
+            "67cdc95889809dd3ee59ed02",
+            { $inc: { priority_vip_count: -1 } }
+          );
+        } else {
+          await Priority.findByIdAndUpdate(
+            "67cdc95889809dd3ee59ed02",
+            { $inc: { priority_regular_count: -1 } }
+          );
+        }
+        
+        return res.redirect("/");
+      } catch (err) {
+        console.error("Error in seat_layout:", err);
+        return res.status(500).json({ success: false, message: "Server error" });
+      }
   });
   app.post("/user_info", async (req, res) => {
       const { email,first_name, last_name, gender,dob} = req.body; 
@@ -215,45 +218,7 @@
           res.status(500).send("Error inserting or updating record");
       }
   });
-  function parseSeat(seatString) {
-    const [row, col] = seatString.split("-").map(Number);
-    return { row, col };
-  }
-  // Sample data - in a real app, this would come from a database
-  // let tickets = [
-  //   { class: "Business", id: "BUS001", name: "John Doe", from: "NY", to: "LA", date: "2025-02-15", assignedPriority: 36 },
-  //   { class: "Economy", id: "ECO001", name: "Jane Smith", from: "Chicago", to: "Miami", date: "2025-02-16", assignedPriority: 24 },
-  //   { class: "Economy", id: "ECO002", name: "Alice Johnson", from: "London", to: "Paris", date: "2025-02-17", assignedPriority: 27 },
-  //   { class: "Business", id: "BUS002", name: "Bob Wilson", from: "Tokyo", to: "Sydney", date: "2025-02-18", assignedPriority: 14 },
-  //   { class: "Business", id: "BUS003", name: "Emily Davis", from: "Berlin", to: "Madrid", date: "2025-02-19", assignedPriority: 32 },
-  //   { class: "Economy", id: "ECO003", name: "Michael Brown", from: "San Francisco", to: "Seattle", date: "2025-02-20", assignedPriority: 18 }
-  // ];
 
-  // Routes
-
-  // Get all tickets
- 
-  // Update the DELETE endpoint to remove a ticket from MongoDB
-  // app.delete('/api/tickets/:id', async (req, res) => {
-  //   try {
-  //     const ticketId = req.params.id;
-      
-  //     // Find and delete the ticket
-  //     const result = await fTicket.deleteOne({ ticket_id: ticketId });
-      
-  //     if (result.deletedCount === 0) {
-  //       return res.status(404).json({ error: "Ticket not found" });
-  //     }
-      
-  //     res.json({ success: true, message: `Ticket ${ticketId} deleted` });
-  //   } catch (err) {
-  //     console.error('Error deleting ticket from database:', err);
-  //     res.status(500).json({ error: "Error deleting ticket from database" });
-  //   }
-  // });
-
-  // Update the confirm tickets endpoint to update status in MongoDB
-  // Add this new endpoint to handle the confirm button action
 app.post('/api/confirm-ticket', async (req, res) => {
   try {
     const { ticketId } = req.body; // This could be session ID or _id of the temporary ticket
@@ -279,12 +244,13 @@ app.post('/api/confirm-ticket', async (req, res) => {
     console.log('Found temporary ticket:', tempTicket);
     
     // Generate a ticket ID if not present
-    const ticketID = tempTicket.ticket_id || generateTicketID(
-      tempTicket.tripType || 'Economy', 
-      tempTicket.row || 1, 
-      tempTicket.col || 1, 
-      "Regular" // Default priority type
-    );
+    // const ticketID = tempTicket.ticket_id 
+    // || generateTicketID(
+    //   tempTicket.tripType || 'Economy', 
+    //   tempTicket.row || 1, 
+    //   tempTicket.col || 1, 
+    //   "Regular" // Default priority type
+    // );
     
     // Create a new final ticket from the temporary ticket data
     const finalTicket = new fTicket({
@@ -301,8 +267,8 @@ app.post('/api/confirm-ticket', async (req, res) => {
       flight_name: tempTicket.flight_name || 'Default Airline',
       flight_no: tempTicket.flight_no || Math.floor(Math.random() * 1000),
       flight_price: tempTicket.flight_price || 0,
-      ticket_id: ticketID,
-      priority: tempTicket.priority || 50 // Default priority
+      ticketId: ticketId,
+      assignedPriority: tempTicket.assignedPriority || 50 // Default priority
     });
     
     // Save the final ticket
@@ -312,19 +278,25 @@ app.post('/api/confirm-ticket', async (req, res) => {
     // Delete the temporary ticket
     await pTicket.findByIdAndDelete(tempTicket._id);
     console.log('Temporary ticket deleted');
+
+    // await Seat.findOneAndUpdate(
+    //   {ticketId},
+    //   {$set: {status:'available'}},
+    //   {new:true}
+    // )
     
     // Return success response
     res.json({
       success: true,
       message: "Ticket confirmed successfully",
       ticket: {
-        id: finalTicket.ticket_id,
+        id: finalTicket.ticketId,
         class: finalTicket.tripType,
         name: `${finalTicket.first_name} ${finalTicket.last_name}`,
         from: finalTicket.departure,
         to: finalTicket.arrival,
         date: finalTicket.depart_date ? new Date(finalTicket.depart_date).toISOString().split('T')[0] : 'N/A',
-        assignedPriority: finalTicket.priority
+        assignedPriority: finalTicket.assignedPriority
       }
     });
     
@@ -361,7 +333,7 @@ app.post('/api/confirm-tickets', async (req, res) => {
             $or: [
               { sessionId: ticketId },
               { _id: ticketId.toString() },
-              { ticket_id: ticketId }
+              { ticketId: ticketId }
             ]
           });
         }
@@ -372,12 +344,12 @@ app.post('/api/confirm-tickets', async (req, res) => {
         }
         
         // Generate a ticket ID if not present
-        const ticketID = tempTicket.ticket_id || generateTicketID(
-          tempTicket.tripType || 'Economy', 
-          tempTicket.row || 1, 
-          tempTicket.col || 1, 
-          "Regular" // Default priority type
-        );
+        // const ticketID = tempTicket.ticket_id || generateTicketID(
+        //   tempTicket.tripType || 'Economy', 
+        //   tempTicket.row || 1, 
+        //   tempTicket.col || 1, 
+        //   "Regular" // Default priority type
+        // );
         
         // Create a new final ticket
         const finalTicket = new fTicket({
@@ -390,12 +362,12 @@ app.post('/api/confirm-tickets', async (req, res) => {
           gender: tempTicket.gender,
           dob: tempTicket.dob,
           session_id: tempTicket.sessionId,
-          tripType: tempTicket.tripType || 'Economy',
-          flight_name: tempTicket.flight_name || 'Default Airline',
+          tripType: tempTicket.tripType || 'Oneway',
+          flight_name: tempTicket.flight_name || 'Team S Airline',
           flight_no: tempTicket.flight_no || Math.floor(Math.random() * 1000),
           flight_price: tempTicket.flight_price || 0,
-          ticket_id: ticketID,
-          priority: tempTicket.priority || 50
+          ticketId: ticketId,
+          assignedPriority: tempTicket.assignedPriority || 50
         });
         
         // Save the final ticket
@@ -406,7 +378,7 @@ app.post('/api/confirm-tickets', async (req, res) => {
         
         results.success.push({
           id: ticketId,
-          finalTicketId: finalTicket.ticket_id
+          finalTicketId: finalTicket.ticketId
         });
         
       } catch (err) {
@@ -500,10 +472,7 @@ app.post('/api/confirm-tickets', async (req, res) => {
 
 
 
-  app.use((req, res, next) => {
-    console.log(`${req.method} request to ${req.url}`);
-    next();
-  });
+  
 
 
   app.get("/", (req, res) => {
@@ -554,13 +523,13 @@ app.post('/api/confirm-tickets', async (req, res) => {
         const formattedPartialTickets = partialTickets.map(ticket => {
           try {
             return {
-              class: ticket.tripType || "Economy",
-              id: ticket._id.toString(), // Use MongoDB ID if ticket_id not available
+              class: ticket.memberType || "Economy",
+              id: ticket.ticketId, // Use MongoDB ID if ticket_id not available
               name: `${ticket.first_name || ''} ${ticket.last_name || ''}`.trim(),
               from: ticket.departure || 'N/A',
               to: ticket.arrival || 'N/A',
               date: ticket.departureDate ? new Date(ticket.departureDate).toISOString().split('T')[0] : 'N/A',
-              assignedPriority: 50 // Default priority
+              assignedPriority:ticket.assignedPriority|| 50 // Default priority
             };
           } catch (err) {
             console.error('Error formatting partial ticket:', err);
@@ -572,13 +541,13 @@ app.post('/api/confirm-tickets', async (req, res) => {
         const formattedFinalTickets = partialTickets.map(ticket => {
           try {
             return {
-              class: ticket.tripType || "Economy",
-              id: ticket.ticket_id || ticket._id.toString(),
+              class: ticket.memberType|| "Economy",
+              id: ticket.ticketId || ticket._id.toString(),
               name: `${ticket.first_name || ''} ${ticket.last_name || ''}`.trim(),
               from: ticket.departure || 'N/A',
               to: ticket.arrival || 'N/A',
-              date:  'N/A',
-              assignedPriority: ticket.priority || 0
+              date:  ticket.departureDate||'N/A',
+              assignedPriority: ticket.assignedPriority || 0
             };
           } catch (err) {
             console.error('Error formatting final ticket:', err);

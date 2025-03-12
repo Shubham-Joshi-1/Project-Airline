@@ -77,7 +77,6 @@ function autocomplete(input, suggestions) {
             }
         }
     });
-    
     function addActive(x) {
         if (!x) return false;
         removeActive(x);
@@ -85,13 +84,11 @@ function autocomplete(input, suggestions) {
         if (currentFocus < 0) currentFocus = (x.length - 1);
         x[currentFocus].classList.add("autocomplete-active");
     }
-    
     function removeActive(x) {
         for (let i = 0; i < x.length; i++) {
             x[i].classList.remove("autocomplete-active");
         }
     }
-    
     function closeAllLists(elmnt) {
         let x = document.getElementsByClassName("autocomplete-suggestions");
         for (let i = 0; i < x.length; i++) {
