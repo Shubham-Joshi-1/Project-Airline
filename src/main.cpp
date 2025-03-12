@@ -510,16 +510,22 @@ public:
 
 int main()
 {
-    // getCustomerByTicketID(const string &ticketID);
-    // string first_name ,gender;
-
-    // if (cin >> first_name >> genders ) {
-    //     cout << "Stored:"<<first_name<<" "<<gender<<endl;
-    // }
-
     SeatManager manager(6, 4, 3, 4, 10);
-    CustomerHashMap customerMap;
-    BookingRequestManager bookingManager(manager, customerMap);
+    // getCustomerByTicketID(const string &ticketID);
+    string  member_type,seat_class;
+    int row ,col;
+
+    if (cin >>seat_class>>member_type>>row>>col) {
+        cout << manager.generateTicketID( seat_class,  row,  col, member_type)<<endl;
+        cout << "Member Type: " << member_type << endl;
+        cout << "Seat Class: " << seat_class << endl;
+        cout << "Row: " << row << ", Col: " << col << endl;
+    }
+
+
+    // SeatManager manager(6, 4, 3, 4, 10);
+    // CustomerHashMap customerMap;
+    // BookingRequestManager bookingManager(manager, customerMap);
 
     int choice;
     string seatClass, preference, memberType, firstName,lastName, email, ticketID, from, to,gender,departureDate,dob;
