@@ -47,7 +47,7 @@ const seat_layout_schema = new mongoose.Schema({
     flight_no: Number,
     flight_price:Number,
 
-    ticket_id:String,
+    ticketId:String,
     assignedPriority:Number
       });
   const fTicket = mongoose.model('fTicket', final_ticket_schema, 'Tickets');
