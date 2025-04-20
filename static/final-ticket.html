@@ -6,60 +6,250 @@
   <title>Flight Ticket</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f2f5;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       margin: 0;
     }
+    
     .ticket-container {
       background: white;
-      width: 400px;
-      border-radius: 10px;
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+      width: 380px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .ticket-header {
+      background: linear-gradient(135deg, #0062cc, #007bff);
+      color: white;
       padding: 20px;
       text-align: center;
-      border-left: 5px solid #007bff;
+      position: relative;
     }
-    .ticket-container h2 {
-      margin-bottom: 15px;
+    
+    .ticket-header h2 {
+      margin: 0;
+      font-weight: 500;
+      font-size: 22px;
+    }
+    
+    .airline-logo {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-top: 5px;
+    }
+    
+    .ticket-body {
+      padding: 15px 20px;
+    }
+    
+    .ticket-route {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px dashed #e0e0e0;
+    }
+    
+    .route-point {
+      text-align: center;
+    }
+    
+    .route-airport {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    .route-city {
+      font-size: 12px;
+      color: #666;
+    }
+    
+    .route-arrow {
+      flex-grow: 1;
+      height: 2px;
+      background: #e0e0e0;
+      position: relative;
+      margin: 0 15px;
+    }
+    
+    .route-arrow:after {
+      content: '✈';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
       color: #007bff;
+      font-size: 18px;
     }
+    
     .ticket-details {
-      text-align: left;
       font-size: 14px;
     }
-    .ticket-details p {
-      margin: 8px 0;
-      padding: 5px;
-      background: #f9f9f9;
-      border-radius: 5px;
+    
+    .detail-row {
+      display: flex;
+      margin-bottom: 10px;
     }
-    .ticket-details strong {
+    
+    .detail-label {
+      width: 40%;
+      color: #666;
+      font-weight: 500;
+    }
+    
+    .detail-value {
+      width: 60%;
       color: #333;
+      font-weight: 500;
+    }
+    
+    .ticket-footer {
+      background-color: #f8f9fa;
+      padding: 15px 20px;
+      border-top: 1px solid #eaeaea;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .ticket-id {
+      font-size: 12px;
+      color: #666;
+    }
+    
+    .priority-tag {
+      background-color: #28a745;
+      color: white;
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 12px;
+    }
+    
+    .ticket-barcode {
+      margin-top: 10px;
+      padding: 10px 0;
+      text-align: center;
+      border-top: 1px solid #eaeaea;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      letter-spacing: 5px;
+      color: #333;
+    }
+    
+    .cutout-left, .cutout-right {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: #f0f2f5;
+      border-radius: 50%;
+      top: 50%;
+    }
+    
+    .cutout-left {
+      left: -10px;
+    }
+    
+    .cutout-right {
+      right: -10px;
+    }
+    
+    .confirm-button {
+      display: block;
+      width: 80%;
+      margin: 20px auto;
+      padding: 12px 0;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .confirm-button:hover {
+      background-color: #0062cc;
     }
   </style>
 </head>
 <body>
   <div class="ticket-container">
-    <h2>Flight Ticket</h2>
-    <div class="ticket-details">
-      <p><strong>Departure:</strong> <span id="departure"></span></p>
-      <p><strong>Arrival:</strong> <span id="arrival"></span></p>
-      <p><strong>Departure Date:</strong> <span id="depart_date"></span></p>
-      <p><strong>Email:</strong> <span id="email"></span></p>
-      <p><strong>Gender:</strong> <span id="gender"></span></p>
-      <p><strong>Date of Birth:</strong> <span id="dob"></span></p>
-      <p><strong>Flight Name:</strong> <span id="flight_name"></span></p>
-      <p><strong>Flight No:</strong> <span id="flight_no"></span></p>
-      <p><strong>Price:</strong> $<span id="flight_price"></span></p>
-      <p><strong>Ticket ID:</strong> <span id="ticketId"></span></p>
-      <p><strong>Assigned Priority:</strong> <span id="assignedPriority"></span></p>
+    <div class="ticket-header">
+      <h2>Boarding Pass</h2>
+      <div class="airline-logo" id="flight_name">Airline Name</div>
     </div>
+    
+    <div class="ticket-body">
+      <div class="ticket-route">
+        <div class="route-point">
+          <div class="route-airport" id="departure-code">DEP</div>
+          <div class="route-city" id="departure">Departure City</div>
+        </div>
+        
+        <div class="route-arrow"></div>
+        
+        <div class="route-point">
+          <div class="route-airport" id="arrival-code">ARR</div>
+          <div class="route-city" id="arrival">Arrival City</div>
+        </div>
+      </div>
+      
+      <div class="ticket-details">
+        <div class="detail-row">
+          <div class="detail-label">Flight Number:</div>
+          <div class="detail-value" id="flight_no">XYZ123</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Departure Date:</div>
+          <div class="detail-value" id="depart_date">01 Jan 2025</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Passenger:</div>
+          <div class="detail-value" id="passenger-name">John Doe</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Email:</div>
+          <div class="detail-value" id="email">email@example.com</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Date of Birth:</div>
+          <div class="detail-value" id="dob">01 Jan 1990</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Gender:</div>
+          <div class="detail-value" id="gender">Male</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Price:</div>
+          <div class="detail-value">$<span id="flight_price">599</span></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="cutout-left"></div>
+    <div class="cutout-right"></div>
+    
+    <div class="ticket-footer">
+      <div class="ticket-id">ID: <span id="ticketId">TKT12345678</span></div>
+      <div class="priority-tag" id="assignedPriority">Priority</div>
+    </div>
+    
+    <div class="ticket-barcode">
+      ||||| ||| |||| | ||||||| || |
+    </div>
+    
+    <button class="confirm-button" id="confirm-ticket">Confirm Ticket</button>
   </div>
-
+  
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
       try {
@@ -67,26 +257,51 @@
         if (!response.ok) {
           throw new Error("Ticket not found");
         }
-
+        
         const ticket = await response.json();
-
+        
+        // Set airport codes (extract first 3 letters and uppercase them)
+        const departureCode = (ticket.departure || "DEP").substring(0, 3).toUpperCase();
+        const arrivalCode = (ticket.arrival || "ARR").substring(0, 3).toUpperCase();
+        
         // Append values to the page
-        document.getElementById("departure").textContent = ticket.departure || "N/A";
-        document.getElementById("arrival").textContent = ticket.arrival || "N/A";
+        document.getElementById("departure-code").textContent = departureCode;
+        document.getElementById("arrival-code").textContent = arrivalCode;
+        document.getElementById("departure").textContent = ticket.departure || "Departure City";
+        document.getElementById("arrival").textContent = ticket.arrival || "Arrival City";
         document.getElementById("depart_date").textContent = ticket.departureDate || "N/A";
-        document.getElementById("email").textContent = ticket.email || "N/A";
+        document.getElementById("email").textContent = ticket.email || "email@example.com";
         document.getElementById("gender").textContent = ticket.gender || "N/A";
         document.getElementById("dob").textContent = ticket.dob || "N/A";
         document.getElementById("flight_name").textContent = ticket.flight_name || "Default Airline";
-        document.getElementById("flight_no").textContent = ticket.flight_no || "678";
+        document.getElementById("flight_no").textContent = ticket.flight_no || "XYZ123";
         document.getElementById("flight_price").textContent = ticket.flight_price || "0";
-        document.getElementById("ticketId").textContent = ticket.ticketId || "N/A";
-        document.getElementById("assignedPriority").textContent = ticket.assignedPriority ?? "N/A";
-
+        document.getElementById("ticketId").textContent = ticket.ticketId || "TKT12345678";
+        document.getElementById("passenger-name").textContent = ticket.name || "Passenger Name";
+        
+        // Handle priority display
+        const priorityElement = document.getElementById("assignedPriority");
+        if (ticket.assignedPriority) {
+          priorityElement.textContent = ticket.assignedPriority;
+          // Change color based on priority
+          if (ticket.assignedPriority.toLowerCase().includes("high")) {
+            priorityElement.style.backgroundColor = "#dc3545";
+          } else if (ticket.assignedPriority.toLowerCase().includes("medium")) {
+            priorityElement.style.backgroundColor = "#fd7e14";
+          }
+        } else {
+          priorityElement.textContent = "Standard";
+          priorityElement.style.backgroundColor = "#6c757d";
+        }
       } catch (error) {
         console.error("Error loading ticket:", error);
         alert("Could not load ticket. Please try again.");
       }
+      
+      // Add confirmation button functionality
+      document.getElementById("confirm-ticket").addEventListener("click", function() {
+        alert("Your ticket has been confirmed! You will receive a confirmation email shortly.");
+      });
     });
   </script>
 </body>
